@@ -1,17 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from './components/Home.vue'
-import FAQ from './components/FAQ.vue'
+
+import Home from "./components/Home"
+import CheckForm from "./components/CheckForm"
+import Entity from "./components/Entity"
 
 Vue.use(VueRouter)
-const routes = [
-  {path:'/', name: 'home', component: Home},
-  {path:'/testDemo', name: 'faq', component: FAQ},
 
-];
+const routes = [
+    {path: '/', name:'home', component: Home},
+    {path: '/check', name: 'check', component: CheckForm},
+    {path: '/entity/:id', name:'entity', component:Entity},
+]
+
 const router = new VueRouter({
-  routes,
-  mode: 'history',
-});
+    routes,
+    mode: 'history',
+})
 
 export default router

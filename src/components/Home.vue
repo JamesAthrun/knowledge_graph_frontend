@@ -1,33 +1,76 @@
 <template>
-  <main class="home">
-    <h1>Welcome to our Knowledge Graph</h1>
+    <main class="home">
+        <h1>Welcome to our knowledge graph</h1>
+        <SmartForm
+                class="form"
+                title="Please enter the entity">
+            <FormInput
+                    name="test"
+                    v-model="message"
+                    placeholder="" />
+            <template slot="actions">
+                <button
+                        type="button"
+                        class="secondary"
+                        @click="search">
+                    Search
+                </button>
+                <button
+                        type="button"
+                        class="secondary"
+                        @click="clear">
+                    Clear
+                </button>
+            </template>
+        </SmartForm>
 
-    <div>
-      <input v-model="message" placeholder="enter the entity here">
-      <button @click="search"> search </button>
-    </div>
 
-    <p>
-      <!--We are here to help! Please read the <router-link :to="{name: 'faq'}">F.A.Q</router-link> first,
-      and if you don't find the answer to your question, <router-link :to="{name: 'tickets'}">send us a ticket!</router-link>-->
-      This is our Knowledge Graph. Please enter the entity you want to search.
-    </p>
-  </main>
+        <div v-if="isSearched">
+            <section class="list">
+                <article v-for="searchResult of searchResultList" @click="getEntity(searchResult.id)">
+                    <h2 v-html="searchResult.id"></h2>
+                    <p v-html="searchResult.name"></p>
+                </article>
+            </section>
+        </div>
+    </main>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        message: '',
-      }
-    },
+    import RemoteData from "../mixin/RemoteData"
 
-    methods: {
-      search() {
-        this.$router.push('/testDemo')
-      }
+    export default {
+        data() {
+            return {
+                message: '',
+                searchResultList: [],
+                isSearched: false,
+            }
+        },
+        mixins: [
+            RemoteData({
+                searchResultList: 'questions'
+            }),
+        ],
+        methods: {
+            async search() {
+                this.isSearched = true
+                console.log(this.message)
+                //this.searchResultList = await this.$fetch('questions')
+                this.searchResultList = [{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"{\"_language\":\"zh\",\"_value\":\"成年人\"}","id":"95393"}]
+            },
+            clear() {
+                this.message = ''
+            },
+
+            getEntity(id) {
+                console.log()
+                this.$router.push(`/entity/${id}`)
+            },
+        }
     }
-
-  }
 </script>
+
+<style scoped>
+
+</style>
