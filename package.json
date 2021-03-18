@@ -1,5 +1,5 @@
 {
-  "name": "knowledge-graph",
+  "name": "support-center",
   "description": "A Vue.js project",
   "version": "1.0.0",
   "author": "JamesAthrun <1661620944@qq.com>",
@@ -10,10 +10,11 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
     "echarts": "^4.8.0",
+    "element-plus": "^1.0.2-beta.35",
+    "moment": "^2.29.1",
     "vue": "^2.5.11",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.0.1"
   },
   "browserslist": [
     "> 1%",
@@ -23,14 +24,12 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
-    "bootstrap": "^4.6.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
-    "jquery": "^3.6.0",
-    "popper": "^1.0.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "vue-loader": "^13.0.5",

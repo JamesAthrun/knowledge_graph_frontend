@@ -1,19 +1,20 @@
 <template>
-  <nav class="menu">
-    <router-link :to="{ name: 'home'}" exact>Home</router-link>
-
-  </nav>
+    <nav class="menu">
+        <router-link :to="{ name: 'home' }" exact>Home</router-link>
+        <router-link :to="{ name: 'check' }">Check</router-link>
+    </nav>
 </template>
 
 <script>
-export default {
-}
+    export default {
+        name: "NavMenu"
+    }
 </script>
 
 <style lang="stylus" scoped>
-@import '../style/imports';
+    @import '../style/imports'
 
-.router-link-active {
-  border-bottom-color: $primary-color;
-}
+    .router-link-active {
+        border-bottom-color: $primary-color;
+    }
 </style>
