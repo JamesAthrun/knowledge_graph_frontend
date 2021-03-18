@@ -28,8 +28,9 @@
         <div v-if="isSearched">
             <section class="list">
                 <article v-for="searchResult of searchResultList" @click="getEntity(searchResult.id)">
-                    <h2 v-html="searchResult.id"></h2>
-                    <p v-html="searchResult.name"></p>
+                    <h2 v-html="searchResult.name"></h2>
+                    <p v-html="searchResult.id"></p>
+                    <p v-html="searchResult.des"></p>
                 </article>
             </section>
         </div>
@@ -55,9 +56,12 @@
         methods: {
             async search() {
                 this.isSearched = true
-                console.log(this.message)
-                //this.searchResultList = await this.$fetch('questions')
-                this.searchResultList = [{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"{\"_language\":\"zh\",\"_value\":\"成年人\"}","id":"95393"}]
+                var url = 'KG/search?keywords=' + this.message
+                var response = await this.$fetch(url)
+                this.searchResultList = JSON.parse(response.data).data
+                //console.log(this.searchResultList)
+                //console.log(this.searchResultList[0].id)
+                //this.searchResultList = [{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"{\"_language\":\"zh\",\"_value\":\"成年人\"}","id":"95393"}]
             },
             clear() {
                 this.message = ''

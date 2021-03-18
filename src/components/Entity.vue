@@ -133,12 +133,15 @@
 </template>
 
 <script>
+    import axios from "axios"
+    import VueAxios from "vue-axios"
+
     export default {
         name: 'Echarts',
         data() {
             return {
                 mode: 0,
-                entityTitle:'人民的名义关系图谱',
+                entityTitle:'knowledge graph',
                 entityData:[],
                 entityLinks:[],
 
@@ -285,6 +288,7 @@
             },
             changeData() {
                 let index = (this.entityData || []).findIndex((item) => item.id === this.currentEntityId)
+                console.log(this.entityData[index].name)
                 this.entityData[index].name = this.currentEntityName
                 this.entityData[index].id = this.currentEntityId
                 this.myEcharts()
@@ -297,13 +301,25 @@
                 this.goBack()
             }
         },
-        created() {
-            this.entityData = [{"name":"_:genid1","id":"86604"},{"name":"_type","id":"86502"},{"name":"http://www.w3.org/2002/07/owl#Class","id":"86706"},{"name":"http://www.w3.org/2002/07/owl#oneOf","id":"86808"},{"name":"http://www.openkg.cn/COVID-19/prevention#医护人员","id":"86910"},{"name":"http://www.openkg.cn/COVID-19/prevention#孕产妇","id":"87012"},{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10102","id":"87216"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10103","id":"87318"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10105","id":"87420"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10106","id":"87522"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R1020201","id":"87624"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030101","id":"87726"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030201","id":"87828"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030301","id":"87930"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030401","id":"88032"},{"name":"http://www.openkg.cn/COVID-19/prevention/class/C1","id":"91653"},{"name":"http://www.w3.org/2002/07/owl#equivalentClass","id":"95189"}]
-            this.entityLinks = [{"name":"86502","source":"86604","target":"86706"},{"name":"86808","source":"86604","target":"86910"},{"name":"86808","source":"86604","target":"87012"},{"name":"86808","source":"86604","target":"87114"},{"name":"86808","source":"86604","target":"87216"},{"name":"86808","source":"86604","target":"87318"},{"name":"86808","source":"86604","target":"87420"},{"name":"86808","source":"86604","target":"87522"},{"name":"86808","source":"86604","target":"87624"},{"name":"86808","source":"86604","target":"87726"},{"name":"86808","source":"86604","target":"87828"},{"name":"86808","source":"86604","target":"87930"},{"name":"86808","source":"86604","target":"88032"},{"name":"95189","source":"91653","target":"86604"}]
+
+        async created() {
             this.mode = 'empty'
+            var url = '/KG/getGraphData?id=' + this.$route.params.id
+            var response = await this.$fetch(url)
+            var tmpData = JSON.parse(response.data).data
+
+            var tmpLinks = JSON.parse(response.data).link
+            for (var key in tmpData) {
+                this.entityData.push(tmpData[key])
+            }
+            for (var key in tmpLinks) {
+                this.entityLinks.push(key)
+            }
+            console.log(this.entityData)
         },
         mounted() {
             console.log(this.$route.params.id)
+
             this.myEcharts();
         }
     }
