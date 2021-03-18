@@ -162,7 +162,8 @@
             myEcharts(){
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = this.$echarts.init(document.getElementById('main'));
-
+                console.log('success')
+                console.log(this.entityData)
                 // 指定图表的配置项和数据
                 var option = {
                     title: { text: this.entityTitle },
@@ -307,21 +308,31 @@
             var url = '/KG/getGraphData?id=' + this.$route.params.id
             var response = await this.$fetch(url)
             var tmpData = JSON.parse(response.data).data
-
             var tmpLinks = JSON.parse(response.data).link
+            this.entityData = []
+            this.entityLinks = []
+
             for (var key in tmpData) {
-                this.entityData.push(tmpData[key])
+                var item = {
+                    name: tmpData[key].name,
+                    id: tmpData[key].id,
+                    des: tmpData[key].des
+                }
+                console.log(item)
+                this.entityData.push(item)
             }
             for (var key in tmpLinks) {
-                this.entityLinks.push(key)
+                var item = {
+                    name: tmpLinks[key].name,
+                    source: tmpLinks[key].source,
+                    target: tmpLinks[key].target
+                }
+                console.log(item)
+                this.entityLinks.push(item)
             }
             console.log(this.entityData)
-        },
-        mounted() {
-            console.log(this.$route.params.id)
-
             this.myEcharts();
-        }
+        },
     }
 </script>
 
