@@ -11,7 +11,7 @@ import VueAxios from "vue-axios"
 Vue.prototype.$echarts = echarts
 
 Vue.use(VueFetch, {
-    baseUrl: 'http://localhost:8080/'
+    baseUrl: 'http://localhost:8082/'
 
 })
 
