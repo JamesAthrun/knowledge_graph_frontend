@@ -126,6 +126,42 @@
                 </SmartForm>
             </div>
 
+            <div v-if="mode === 'changeLink'">
+                <SmartForm
+                        class="form"
+                        title="Please enter the elements">
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkName"/>
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkSource"/>
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkTarget"/>
+                    <template slot="actions">
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="changeLink">
+                            Change
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="deleteLink">
+                            Delete
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="goBack">
+                            Back
+                        </button>
+                    </template>
+                </SmartForm>
+            </div>
+
         </div>
     </div>
 
@@ -155,7 +191,9 @@
                 currentEntityName: '',
                 currentEntityId: '',
 
-
+                currentLinkName: '',
+                currentLinkSource: '',
+                currentLinkTarget:'',
             }
         },
         methods:{
@@ -243,6 +281,10 @@
                     }
                     else if (params.dataType == 'edge') {
                         that.mode = 'changeLink'
+                        console.log(params)
+                        that.currentLinkName = params.data.name
+                        that.currentLinkSource = params.data.source
+                        that.currentLinkTarget = params.data.target
                     }
                 })
             },
@@ -300,6 +342,21 @@
                 this.entityData.splice(index, 1)
                 this.myEcharts()
                 this.goBack()
+            },
+            changeLink() {
+                let index = (this.entityLinks || []).findIndex((item) => item.name === this.currentLinkName)
+                console.log(this.entityLinks[index].name)
+                this.entityLinks[index].name = this.currentLinkName
+                this.entityLinks[index].source = this.currentLinkSource
+                this.entityLinks[index].target = this.currentLinkTarget
+                this.myEcharts()
+                this.goBack()
+            },
+            deleteLink() {
+                let index = (this.entityLinks || []).findIndex((item) => item.name === this.currentLinkName)
+                this.entityLinks.splice(index, 1)
+                this.myEcharts()
+                this.goBack()
             }
         },
 
@@ -318,7 +375,6 @@
                     id: tmpData[key].id,
                     des: tmpData[key].des
                 }
-                console.log(item)
                 this.entityData.push(item)
             }
             for (var key in tmpLinks) {
@@ -327,10 +383,8 @@
                     source: tmpLinks[key].source,
                     target: tmpLinks[key].target
                 }
-                console.log(item)
                 this.entityLinks.push(item)
             }
-            console.log(this.entityData)
             this.myEcharts();
         },
     }
