@@ -60,6 +60,10 @@
                         title="Please enter the elements">
                     <FormInput
                             name="test"
+                            v-model="newLinkId"
+                            placeholder="LinkId" />
+                    <FormInput
+                            name="test"
                             v-model="newLinkName"
                             placeholder="LinkName" />
                     <FormInput
@@ -126,6 +130,42 @@
                 </SmartForm>
             </div>
 
+            <div v-if="mode === 'changeLink'">
+                <SmartForm
+                        class="form"
+                        title="Please enter the elements">
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkName"/>
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkSource"/>
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkTarget"/>
+                    <template slot="actions">
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="changeLink">
+                            Change
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="deleteLink">
+                            Delete
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="goBack">
+                            Back
+                        </button>
+                    </template>
+                </SmartForm>
+            </div>
+
         </div>
     </div>
 
@@ -143,11 +183,16 @@
                 mode: 0,
                 entityTitle:'knowledge graph',
                 entityData:[],
+                propertyData: [],
                 entityLinks:[],
+
+                displayData: [],
+                displayLink: [],
 
                 newEntityName: '',
                 newEntityId: '',
 
+                newLinkId:'',
                 newLinkName: '',
                 newLinkSource: '',
                 newLinkTarget:'',
@@ -155,15 +200,17 @@
                 currentEntityName: '',
                 currentEntityId: '',
 
-
+                currentLinkId:'',
+                currentLinkName: '',
+                //currentLinkSource: '',
+                //currentLinkTarget:'',
             }
         },
         methods:{
             myEcharts(){
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = this.$echarts.init(document.getElementById('main'));
-                console.log('success')
-                console.log(this.entityData)
+
                 // 指定图表的配置项和数据
                 var option = {
                     title: { text: this.entityTitle },
@@ -224,8 +271,8 @@
                                     }
                                 }
                             },
-                            data: this.entityData,
-                            links: this.entityLinks
+                            data: this.displayData,
+                            links: this.displayLink
 
                         }
                     ]
@@ -243,6 +290,11 @@
                     }
                     else if (params.dataType == 'edge') {
                         that.mode = 'changeLink'
+                        console.log(params)
+                        that.currentLinkId = params.data.id
+                        that.currentLinkName = params.data.des
+                        that.currentLinkSource = params.data.source
+                        that.currentLinkTarget = params.data.target
                     }
                 })
             },
@@ -300,6 +352,22 @@
                 this.entityData.splice(index, 1)
                 this.myEcharts()
                 this.goBack()
+            },
+            changeLink() {
+                let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkName)
+                console.log()
+                console.log(this.entityLinks[index])
+                this.entityLinks[index].des = this.currentLinkName
+                this.entityLinks[index].source = this.currentLinkSource
+                this.entityLinks[index].target = this.currentLinkTarget
+                this.myEcharts()
+                this.goBack()
+            },
+            deleteLink() {
+                let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkName)
+                this.entityLinks.splice(index, 1)
+                this.myEcharts()
+                this.goBack()
             }
         },
 
@@ -307,30 +375,60 @@
             this.mode = 'empty'
             var url = '/KG/getGraphData?id=' + this.$route.params.id
             var response = await this.$fetch(url)
-            var tmpData = JSON.parse(response.data).data
+            //console.log(response)
+            var tmpEntityData = JSON.parse(response.data).entityData
             var tmpLinks = JSON.parse(response.data).link
-            this.entityData = []
-            this.entityLinks = []
+            var tmpPropertyData = JSON.parse(response.data).propertyData
+            console.log(tmpEntityData)
+            console.log(tmpLinks)
+            console.log(tmpPropertyData)
 
+            this.entityData = tmpEntityData
+            this.entityLinks = tmpLinks
+            this.propertyData = tmpPropertyData
+            /*console.log(response)
             for (var key in tmpData) {
-                var item = {
+                var newItem = {
                     name: tmpData[key].name,
                     id: tmpData[key].id,
                     des: tmpData[key].des
                 }
-                console.log(item)
-                this.entityData.push(item)
+                if (newItem.des == '') {
+                    this.relationData.push(newItem)
+                }
+                else {
+                    this.entityData.push(newItem)
+                }
+
             }
             for (var key in tmpLinks) {
-                var item = {
-                    name: tmpLinks[key].name,
+                var newItem = {
+                    id: tmpLinks[key].name,
                     source: tmpLinks[key].source,
                     target: tmpLinks[key].target
                 }
-                console.log(item)
-                this.entityLinks.push(item)
+                this.entityLinks.push(newItem)
             }
+
             console.log(this.entityData)
+            console.log(this.entityLinks)
+            console.log(this.relationData)*/
+
+            this.displayData = this.entityData
+            this.displayLink = []
+
+            for (var key in this.entityLinks) {
+                let index = (this.propertyData || []).findIndex((item) => item.id === this.entityLinks[key].name)
+                var newItem = {
+                    id: this.entityLinks[key].id, //每一个link独有的属性id
+                    name: this.entityLinks[key].name, //这种link所属的property的name(id)
+                    des: this.propertyData[index].des,
+                    source: this.entityLinks[key].source,
+                    target: this.entityLinks[key].target
+                }
+                this.displayLink.push(newItem)
+            }
+
             this.myEcharts();
         },
     }
