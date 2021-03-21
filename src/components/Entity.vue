@@ -17,6 +17,12 @@
                         @click="changeModeToLink">
                     Add link
                 </button>
+                <button
+                        type="button"
+                        class="secondary"
+                        @click="downloadJson">
+                    Download
+                </button>
             </div>
 
             <div v-if="mode === 'addData'">
@@ -221,9 +227,25 @@
                 currentLinkDes:'',
                 currentLinkSource: '',
                 currentLinkTarget:'',
+
+                jsonData:'',
             }
         },
         methods:{
+        downloadJson() {
+                console.log(this.jsonData);
+                var blob = new Blob([JSON.stringify(this.jsonData)],{type: 'application/json;charset=utf-8'})
+                var downloadElement = document.createElement('a');
+                var href = window.URL.createObjectURL(blob);
+                downloadElement.href = href;
+                downloadElement.download = "data" + ".json";
+                document.body.appendChild(downloadElement);
+                downloadElement.click(); //点击下载
+                document.body.removeChild(downloadElement);
+                window.URL.revokeObjectURL(href);
+
+
+            },
             createDisplay() {
                 this.displayData = this.entityData
                 this.displayLink = []
@@ -457,6 +479,7 @@
             var tmpEntityData = JSON.parse(response.data).entityData
             var tmpLinks = JSON.parse(response.data).link
             var tmpPropertyData = JSON.parse(response.data).propertyData
+            this.jsonData = response.data
             console.log(tmpEntityData)
             console.log(tmpLinks)
             console.log(tmpPropertyData)
@@ -494,6 +517,8 @@
 
             this.myEcharts();
         },
+
+
     }
 </script>
 
