@@ -2,6 +2,10 @@
     <nav class="menu">
         <router-link :to="{ name: 'home' }" exact>Home</router-link>
         <router-link :to="{ name: 'check' }">Check</router-link>
+<<<<<<< HEAD
+=======
+        <router-link :to="{ name: 'createNew' }">CreateNew</router-link>
+>>>>>>> 9f37d0e967b5eaac1b4ccb3220e33700a8fd412a
     </nav>
 </template>
 

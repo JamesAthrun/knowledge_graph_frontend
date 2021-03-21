@@ -35,7 +35,7 @@
                         <button
                                 type="button"
                                 class="secondary"
-                                @click="enterData">
+                                @click="addData">
                             Enter
                         </button>
                         <button
@@ -60,8 +60,16 @@
                         title="Please enter the elements">
                     <FormInput
                             name="test"
+                            v-model="newLinkId"
+                            placeholder="LinkId" />
+                    <FormInput
+                            name="test"
                             v-model="newLinkName"
                             placeholder="LinkName" />
+                    <FormInput
+                            name="test"
+                            v-model="newLinkDes"
+                            placeholder="LinkDescription" />
                     <FormInput
                             name="test"
                             v-model="newLinkSource"
@@ -74,7 +82,7 @@
                         <button
                                 type="button"
                                 class="secondary"
-                                @click="enterLink">
+                                @click="addLink">
                             Enter
                         </button>
                         <button
@@ -92,6 +100,87 @@
                     </template>
                 </SmartForm>
             </div>
+
+            <div v-if="mode === 'changeData'">
+                <SmartForm
+                        class="form"
+                        title="Please enter the elements">
+                    <FormInput
+                            name="test"
+                            v-model="currentEntityName"/>
+                    <FormInput
+                            name="test"
+                            v-model="currentEntityId"/>
+                    <template slot="actions">
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="changeData">
+                            Change
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="deleteData">
+                            Delete
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="goBack">
+                            Back
+                        </button>
+                    </template>
+                </SmartForm>
+            </div>
+
+            <div v-if="mode === 'changeLink'">
+                <SmartForm
+                        class="form"
+                        title="Please enter the elements">
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkId"
+                            placeholder="LinkId" />
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkName"
+                            placeholder="LinkName" />
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkDes"
+                            placeholder="LinkDescription" />
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkSource"
+                            placeholder="LinkSource" />
+                    <FormInput
+                            name="test"
+                            v-model="currentLinkTarget"
+                            placeholder="LinkTarget" />
+                    <template slot="actions">
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="changeLink">
+                            Change
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="deleteLink">
+                            Delete
+                        </button>
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="goBack">
+                            Back
+                        </button>
+                    </template>
+                </SmartForm>
+            </div>
+
         </div>
     </div>
 
@@ -99,29 +188,62 @@
 </template>
 
 <script>
+    import axios from "axios"
+    import VueAxios from "vue-axios"
+
     export default {
         name: 'Echarts',
         data() {
             return {
                 mode: 0,
-                entityTitle:'人民的名义关系图谱',
+                entityTitle:'knowledge graph',
                 entityData:[],
+                propertyData: [],
                 entityLinks:[],
+
+                displayData: [],
+                displayLink: [],
 
                 newEntityName: '',
                 newEntityId: '',
 
+                newLinkId:'',
                 newLinkName: '',
+                newLinkDes:'',
                 newLinkSource: '',
                 newLinkTarget:'',
 
+                currentEntityName: '',
+                currentEntityId: '',
+
+                currentLinkId:'',
+                currentLinkName: '',
+                currentLinkDes:'',
+                currentLinkSource: '',
+                currentLinkTarget:'',
             }
         },
         methods:{
+            createDisplay() {
+                this.displayData = this.entityData
+                this.displayLink = []
+
+                for (var key in this.entityLinks) {
+                    let index = (this.propertyData || []).findIndex((item) => item.id === this.entityLinks[key].name)
+                    var newItem = {
+                        id: this.entityLinks[key].id, //每一个link独有的属性id
+                        name: this.entityLinks[key].name, //这种link所属的property的name(id)
+                        des: this.propertyData[index].des,
+                        source: this.entityLinks[key].source,
+                        target: this.entityLinks[key].target
+                    }
+                    this.displayLink.push(newItem)
+                }
+            },
             myEcharts(){
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = this.$echarts.init(document.getElementById('main'));
-
+                this.createDisplay()
                 // 指定图表的配置项和数据
                 var option = {
                     title: { text: this.entityTitle },
@@ -182,8 +304,8 @@
                                     }
                                 }
                             },
-                            data: this.entityData,
-                            links: this.entityLinks
+                            data: this.displayData,
+                            links: this.displayLink
 
                         }
                     ]
@@ -191,6 +313,47 @@
 
                 // 使用刚指定的配置项和数据显示图表。
                 myChart.setOption(option);
+
+                var that = this
+                myChart.on('click', function(params) {
+                    if (that.mode == 'empty') {
+                        if (params.dataType == 'node') {
+                            that.mode = 'changeData'
+                            that.currentEntityName = params.data.name
+                            that.currentEntityId = params.data.id
+                        }
+                        else if (params.dataType == 'edge') {
+                            that.mode = 'changeLink'
+                            console.log(params)
+                            that.currentLinkId = params.data.id
+                            that.currentLinkName = params.data.name
+                            that.currentLinkDes = params.data.des
+                            that.currentLinkSource = params.data.source
+                            that.currentLinkTarget = params.data.target
+                        }
+                    }
+                    if (that.mode == 'addLink') {
+                        if (params.dataType == 'node') {
+                            if (that.newLinkSource == '') {
+                                that.newLinkSource = params.data.id
+                            }
+                            else if (that.newLinkTarget == '') {
+                                that.newLinkTarget = params.data.id
+                            }
+                        }
+                    }
+                    if (that.mode == 'changeLink') {
+                        if (params.dataType == 'node') {
+                            if (that.currentLinkSource == '') {
+                                that.currentLinkSource = params.data.id
+                            }
+                            else if (that.newLinkTarget == '') {
+                                that.currentLinkTarget = params.data.id
+                            }
+                        }
+                    }
+
+                })
             },
             changeModeToData() {
                 this.mode = 'addData'
@@ -200,7 +363,7 @@
                 this.mode = 'addLink'
                 console.log(this.mode)
             },
-            enterData(){
+            addData(){
                 var newData = {
                     "name": this.newEntityName,
                     "id": this.newEntityId,
@@ -218,31 +381,119 @@
                 this.clearData()
                 this.clearLink()
             },
-            enterLink(){
+            addLink(){
+                // 在entityLinks中添加name, id, source, target
                 var newLink = {
                     "name": this.newLinkName,
+                    "id": this.newLinkId,
                     "source": this.newLinkSource,
                     "target": this.newLinkTarget,
                 }
                 this.entityLinks.push(newLink)
+
+                // 在propertyData中添加name, id, des
+                var newProperty = {
+                    "des": this.newLinkDes,
+                    "name": this.newLinkDes,
+                    "id": this.newLinkName,
+                }
+                this.propertyData.push(newProperty)
+
                 this.myEcharts()
                 this.goBack()
             },
             clearLink() {
+                this.newLinkId = ''
                 this.newLinkName = ''
+                this.newLinkDes = ''
                 this.newLinkSource = ''
                 this.newLinkTarget = ''
             },
+            changeData() {
+                let index = (this.entityData || []).findIndex((item) => item.id === this.currentEntityId)
+                console.log(this.entityData[index].name)
+                this.entityData[index].name = this.currentEntityName
+                this.entityData[index].id = this.currentEntityId
+                this.myEcharts()
+                this.goBack()
+            },
+            deleteData() {
+                let index = (this.entityData || []).findIndex((item) => item.id === this.currentEntityId)
+                this.entityData.splice(index, 1)
+                this.myEcharts()
+                this.goBack()
+            },
+            changeLink() {
+                //在entityLinks中更改name, id, source, target
+                let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkId) //利用entityLinks中唯一标识符id来更改
+                console.log(this.entityLinks[index])
+                this.entityLinks[index].name = this.currentLinkName
+                this.entityLinks[index].id = this.currentLinkId
+                this.entityLinks[index].source = this.currentLinkSource
+                this.entityLinks[index].target = this.currentLinkTarget
+
+                //在propertyData中更改name, id, des
+                index = (this.propertyData || []).findIndex((item) => item.id === this.currentLinkName) //利用propertyData中唯一标识符name来更改
+                console.log(this.propertyData[index])
+                this.propertyData[index].des = this.currentLinkDes
+                this.propertyData[index].name = this.currentLinkDes
+                this.propertyData[index].id = this.currentLinkName
+                this.myEcharts()
+                //this.goBack()
+            },
+            deleteLink() {
+                let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkId)
+                this.entityLinks.splice(index, 1)
+                this.myEcharts()
+                this.goBack()
+            }
         },
-        created() {
-            this.entityData = [{"name":"_:genid1","id":"86604"},{"name":"_type","id":"86502"},{"name":"http://www.w3.org/2002/07/owl#Class","id":"86706"},{"name":"http://www.w3.org/2002/07/owl#oneOf","id":"86808"},{"name":"http://www.openkg.cn/COVID-19/prevention#医护人员","id":"86910"},{"name":"http://www.openkg.cn/COVID-19/prevention#孕产妇","id":"87012"},{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10102","id":"87216"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10103","id":"87318"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10105","id":"87420"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R10106","id":"87522"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R1020201","id":"87624"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030101","id":"87726"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030201","id":"87828"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030301","id":"87930"},{"name":"http://www.openkg.cn/COVID-19/prevention/resource/R102030401","id":"88032"},{"name":"http://www.openkg.cn/COVID-19/prevention/class/C1","id":"91653"},{"name":"http://www.w3.org/2002/07/owl#equivalentClass","id":"95189"}]
-            this.entityLinks = [{"name":"86502","source":"86604","target":"86706"},{"name":"86808","source":"86604","target":"86910"},{"name":"86808","source":"86604","target":"87012"},{"name":"86808","source":"86604","target":"87114"},{"name":"86808","source":"86604","target":"87216"},{"name":"86808","source":"86604","target":"87318"},{"name":"86808","source":"86604","target":"87420"},{"name":"86808","source":"86604","target":"87522"},{"name":"86808","source":"86604","target":"87624"},{"name":"86808","source":"86604","target":"87726"},{"name":"86808","source":"86604","target":"87828"},{"name":"86808","source":"86604","target":"87930"},{"name":"86808","source":"86604","target":"88032"},{"name":"95189","source":"91653","target":"86604"}]
+
+        async created() {
             this.mode = 'empty'
-        },
-        mounted() {
-            console.log(this.$route.params.id)
+            var url = '/KG/getGraphData?id=' + this.$route.params.id
+            var response = await this.$fetch(url)
+            //console.log(response)
+            var tmpEntityData = JSON.parse(response.data).entityData
+            var tmpLinks = JSON.parse(response.data).link
+            var tmpPropertyData = JSON.parse(response.data).propertyData
+            console.log(tmpEntityData)
+            console.log(tmpLinks)
+            console.log(tmpPropertyData)
+
+            this.entityData = tmpEntityData
+            this.entityLinks = tmpLinks
+            this.propertyData = tmpPropertyData
+            /*console.log(response)
+            for (var key in tmpData) {
+                var newItem = {
+                    name: tmpData[key].name,
+                    id: tmpData[key].id,
+                    des: tmpData[key].des
+                }
+                if (newItem.des == '') {
+                    this.relationData.push(newItem)
+                }
+                else {
+                    this.entityData.push(newItem)
+                }
+
+            }
+            for (var key in tmpLinks) {
+                var newItem = {
+                    id: tmpLinks[key].name,
+                    source: tmpLinks[key].source,
+                    target: tmpLinks[key].target
+                }
+                this.entityLinks.push(newItem)
+            }
+
+            console.log(this.entityData)
+            console.log(this.entityLinks)
+            console.log(this.relationData)*/
+
             this.myEcharts();
-        }
+        },
     }
 </script>
 
