@@ -22,6 +22,12 @@ export default {
   props: {
     title:{
       type: String,
+    },
+    operation: {
+      type: Function,
+    },
+    valid: {
+      type: Boolean,
     }
   },
   data () {
