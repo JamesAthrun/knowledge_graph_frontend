@@ -92,34 +92,78 @@
                     (this.mode !== 'signup' || this.signupValid)
             },
         },
+        async mounted(){
+            let sth = Math.random().toString()
+            let k = cryptico.generateRSAKey(sth,1024)
+            let modulus = String(k.n)
+            let exponent = String(k.e)
+            console.log(modulus,exponent)
+            $.ajax({
+                url:"http://192.168.3.15:8082/Verify/getDesKey",//url
+                type:"POST",
+                headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                data:JSON.stringify({"exponent":exponent,"modulus":modulus}),//发送公钥
+            }).then((response)=>{
+                let des_key_s = JSON.parse(response.data).key
+                let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
+                this.$state.key = des_key
+                console.log(this.$state.key)
+            })
+        },
         methods: {
             async operation() {
                 await this[this.mode]()
             },
 
             async login () {
-                this.$state.user = await this.$fetch('login', {
-                    method: 'POST',
-                    body: JSON.stringify({
+                $.ajax({
+                    url:"http://192.168.3.15:8082/login",//url
+                    type:"POST",
+                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                    data:encryptByDES(JSON.stringify({
                         username: this.username,
                         password: this.password,
-                    }),
+                    }),this.$state.key),
+                }).then((response)=>{
+                    this.$state.user = response
+                    console.log(this.$state.user)
                 })
                 this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
             },
 
             async signup () {
-                await this.$fetch('signup', {
+                let res = await this.$fetch('signup', {
                     method: 'POST',
-                    body: JSON.stringify({
+                    body: encryptByDES(JSON.stringify({
                         username: this.username,
                         password: this.password,
                         email: this.email,
-                    }),
+                    }),this.$state.key),
                 })
                 this.mode = 'login'
+                console.log(res)
             },
         }
+    }
+    //DES加密
+    function encryptByDES(message, key){
+        let keyHex = CryptoJS.enc.Hex.parse(key);
+        let encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.NoPadding
+        });
+        return encrypted.ciphertext.toString();
+    }
+    //DES解密
+    function decryptByDES(ciphertext, key){
+        let keyHex = CryptoJS.enc.Hex.parse(key);
+        let decrypted = CryptoJS.DES.decrypt({
+            ciphertext: CryptoJS.enc.Hex.parse(ciphertext)
+        }, keyHex, {
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.NoPadding
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
     }
 </script>
 
