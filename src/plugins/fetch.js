@@ -29,3 +29,12 @@ export async function $fetch(url, options) {
         throw error
     }
 }
+
+export async function $req(biasUrl,type,data) {
+    return $.ajax({
+        url: `${baseUrl}${biasUrl}`,
+        type: type,
+        headers: {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+        data: data
+    });
+}
