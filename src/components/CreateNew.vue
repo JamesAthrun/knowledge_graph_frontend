@@ -25,6 +25,9 @@
 </template>
 
 <script>
+
+    import {$ajax} from "../plugins/request";
+
     export default {
         data() {
             return {
@@ -62,17 +65,11 @@
                 })
             },
             save() {
-                $.ajax({
-                    url:"http://192.168.3.15:8082/KG/createGraphByJsonStr",//url
-                    type:"POST",
-                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
-                    data:JSON.stringify({
-                        "entity" : this.uploadData.entity,
-                        "property": this.uploadData.property,
-                        "triple" : this.uploadData.triple
-                    }),
-                })
-                console.log("ok")
+              $ajax("KG/createGraphByJsonStr","POST",
+                  JSON.stringify({"entity" : this.uploadData.entity, "property": this.uploadData.property, "triple" : this.uploadData.triple})
+              ).then(()=>{
+                  console.log("ok")
+              })
             },
             newGraph() {
                 var tmpEntityData = JSON.parse(this.uploadData.data).entityData

@@ -62,7 +62,7 @@
 </template>
 
 <script>
-    import {$req} from "../plugins/fetch";
+    import {$ajax} from "../plugins/request";
 
     export default {
         name: "Login",
@@ -100,7 +100,7 @@
             let modulus = String(k.n)
             let exponent = String(k.e)
             console.log(modulus,exponent)
-            $req("Verify/getDesKey","POST",
+            $ajax("Verify/getDesKey","POST",
                 JSON.stringify({"exponent":exponent,"modulus":modulus}),
             ).then((response)=>{
               let des_key_s = JSON.parse(response.data).key
@@ -115,10 +115,9 @@
             },
 
             async login () {
-                $req("login", "POST",
+                $ajax("login", "POST",
                     encryptByDES(JSON.stringify({username: this.username, password: this.password,}),this.$state.key)
-                )
-                .then((response)=>{
+                ).then((response)=>{
                   this.$state.user = response
                   console.log(this.$state.user)
                 })
@@ -126,20 +125,12 @@
             },
 
             async signup () {
-                $.ajax({
-                    url:"http://192.168.3.15:8082/signup",//url
-                    type:"POST",
-                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
-                    data:encryptByDES(JSON.stringify({
-                        username: this.username,
-                        password: this.password,
-                        email: this.email,
-                    }),this.$state.key),
-                }).then((response)=>{
+                $ajax("signup","POST",
+                    encryptByDES(JSON.stringify({username: this.username, password: this.password, email: this.email,}),this.$state.key)
+                ).then((response)=>{
                     this.mode = 'login'
                     console.log(response)
                 })
-
             },
         }
     }

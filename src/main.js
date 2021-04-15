@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import AppLayout from './components/AppLayout.vue'
 import router from "./router"
-import VueFetch, { $fetch } from './plugins/fetch'
+import VueFetch, { $fetch } from './plugins/request'
 import echarts from 'echarts'
 import './global-components'
 import ElementUI from 'element-ui' //element-ui的全部组件

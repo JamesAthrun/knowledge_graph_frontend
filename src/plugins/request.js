@@ -30,7 +30,7 @@ export async function $fetch(url, options) {
     }
 }
 
-export async function $req(biasUrl,type,data) {
+export async function $ajax(biasUrl,type,data) {
     return $.ajax({
         url: `${baseUrl}${biasUrl}`,
         type: type,
