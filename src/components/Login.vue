@@ -126,16 +126,20 @@
             },
 
             async signup () {
-                let res = await this.$fetch('signup', {
-                    method: 'POST',
-                    body: encryptByDES(JSON.stringify({
+                $.ajax({
+                    url:"http://192.168.3.15:8082/signup",//url
+                    type:"POST",
+                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                    data:encryptByDES(JSON.stringify({
                         username: this.username,
                         password: this.password,
                         email: this.email,
                     }),this.$state.key),
+                }).then((response)=>{
+                    this.mode = 'login'
+                    console.log(response)
                 })
-                this.mode = 'login'
-                console.log(res)
+
             },
         }
     }
