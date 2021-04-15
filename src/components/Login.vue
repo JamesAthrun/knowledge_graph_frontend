@@ -132,16 +132,20 @@
             },
 
             async signup () {
-                let res = await this.$fetch('signup', {
-                    method: 'POST',
-                    body: encryptByDES(JSON.stringify({
+                $.ajax({
+                    url:"http://192.168.3.15:8082/signup",//url
+                    type:"POST",
+                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                    data:encryptByDES(JSON.stringify({
                         username: this.username,
                         password: this.password,
                         email: this.email,
                     }),this.$state.key),
+                }).then((response)=>{
+                    this.mode = 'login'
+                    console.log(response)
                 })
-                this.mode = 'login'
-                console.log(res)
+
             },
         }
     }
@@ -149,8 +153,8 @@
     function encryptByDES(message, key){
         let keyHex = CryptoJS.enc.Hex.parse(key);
         let encrypted = CryptoJS.DES.encrypt(message, keyHex, {
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.NoPadding
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Iso10126
         });
         return encrypted.ciphertext.toString();
     }
@@ -160,8 +164,8 @@
         let decrypted = CryptoJS.DES.decrypt({
             ciphertext: CryptoJS.enc.Hex.parse(ciphertext)
         }, keyHex, {
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.NoPadding
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.Iso10126
         });
         return decrypted.toString(CryptoJS.enc.Utf8);
     }
