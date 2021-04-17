@@ -25,6 +25,14 @@
             </template>
         </SmartForm>
 
+        <div v-if="isSearched">
+            <section class="list">
+                <article v-for="searchResult of answers">
+                    <h2 v-html="searchResult"></h2>
+                </article>
+            </section>
+        </div>
+
     </main>
 </template>
 
@@ -39,14 +47,14 @@
                 question: '',
                 answers: '',
                 prompting: '',
-
+                isSearched: false,
             }
         },
         methods: {
-            check() {
+            async check() {
                 console.log(this.question)
-                let q = this.question.toString()
-                $ajax("KG/ask", "POST", q)
+                this.isSearched = true
+                $ajax("KG/ask", "POST", this.question)
                     .then((response)=> {
                         this.answers = JSON.parse(response.data).table
                         this.prompting = JSON.parse(response.data).help
@@ -56,6 +64,7 @@
             },
             clear() {
                 this.message = ''
+                this.isSearched = false
             },
         }
     }
