@@ -1,14 +1,14 @@
 <template>
-    <main class="login">
-        <h1>Please enter all the required elements</h1>
+    <main class="check">
+        <h1>Check preventive measures here!</h1>
         <SmartForm
                 class="form"
                 title="Please enter the elements">
             <h3>message</h3>
             <FormInput
-                    name="test"
-                    v-model="message"
-                    placeholder="test1" />
+                    name="question"
+                    v-model="question"
+                    placeholder="例：农民工预防措施有哪些？" />
             <template slot="actions">
                 <button
                         type="button"
@@ -30,15 +30,29 @@
 
 
 <script>
+
+    import {$ajax} from "../plugins/request";
+
     export default {
         data () {
             return {
-                message: '',
+                question: '',
+                answers: '',
+                prompting: '',
+
             }
         },
         methods: {
             check() {
-
+                console.log(this.question)
+                let q = this.question.toString()
+                $ajax("KG/ask", "POST", q)
+                    .then((response)=> {
+                        this.answers = JSON.parse(response.data).table
+                        this.prompting = JSON.parse(response.data).help
+                        console.log(this.answers)
+                        console.log(this.prompting)
+                })
             },
             clear() {
                 this.message = ''
