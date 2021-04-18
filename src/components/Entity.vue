@@ -7,7 +7,7 @@
             <el-radio v-model="graphColorTheme" label="black" border size="medium">black</el-radio>
             <el-radio v-model="graphColorTheme" label="red" border size="medium">red</el-radio>
             <el-radio v-model="graphColorTheme" label="blue" border size="medium">blue</el-radio>
-            <el-button type="primary" @click="myEcharts">enter</el-button>
+            <el-button type="primary" @click="myEcharts">refresh</el-button>
         </div>
         <div class="actions">
             <div v-if="mode === 'empty'">
