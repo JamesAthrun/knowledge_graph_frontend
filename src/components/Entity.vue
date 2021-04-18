@@ -7,7 +7,7 @@
             <el-radio v-model="graphColorTheme" label="black" border size="medium">black</el-radio>
             <el-radio v-model="graphColorTheme" label="red" border size="medium">red</el-radio>
             <el-radio v-model="graphColorTheme" label="blue" border size="medium">blue</el-radio>
-            <el-button type="primary" @click="myEcharts">enter</el-button>
+            <el-button type="primary" @click="myEcharts">refresh</el-button>
         </div>
         <div class="actions">
             <div v-if="mode === 'empty'">
@@ -388,6 +388,8 @@
                 this.entityData = tmpEntityData
                 this.entityLinks = tmpLinks
                 this.propertyData = tmpPropertyData
+
+                this.createDisplay()
             },
             myEcharts(){
                 // 基于准备好的dom，初始化echarts实例
@@ -588,7 +590,7 @@
                     console.log(response)
                 })
 */
-                this.refreshData()
+                await this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -629,7 +631,7 @@
                     }),
                 })
 
-                this.refreshData()
+                await this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -663,7 +665,7 @@
                     }),
                 })
 
-                this.refreshData()
+                await this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -706,7 +708,7 @@
                     }),
                 })
 
-                this.refreshData()
+                await this.refreshData()
                 this.myEcharts()
                 //this.goBack()
             },
@@ -722,7 +724,7 @@
                     })
                 })
 
-                this.refreshData()
+                await this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
