@@ -29,14 +29,57 @@
                 <SmartForm
                         class="form"
                         title="Please enter the elements">
+                    <div>
+                        <el-radio v-model="newEntityPos" label="head" border size="medium">Head</el-radio>
+                        <el-radio v-model="newEntityPos" label="tail" border size="medium">Tail</el-radio>
+                    </div>
                     <FormInput
-                            name="test"
-                            v-model="newEntityName"
-                            placeholder="entityName" />
+                            v-if="newEntityPos == 'tail'"
+                            v-model="newEntityHeadId"
+                            placeholder="entityHeadId" />
                     <FormInput
-                            name="test"
+                            v-if="newEntityPos == 'head'"
+                            v-model="newEntityTailId"
+                            placeholder="entityTailId" />
+                    <div>
+                        <el-radio v-model="newEntityProperty" label="new" border size="medium">New</el-radio>
+                        <el-radio v-model="newEntityProperty" label="existed" border size="medium">Existed</el-radio>
+                    </div>
+                    <div v-if="newEntityProperty == 'new'">
+                        <FormInput
+                                v-model="newPropertyNameCn"
+                                placeholder="propertyNameCn" />
+                        <FormInput
+                                v-model="newPropertyNameEn"
+                                placeholder="propertyNameEn" />
+                        <FormInput
+                                v-model="newPropertyId"
+                                placeholder="propertyId" />
+                        <FormInput
+                                v-model="newPropertyComment"
+                                placeholder="propertyComment" />
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="createProperty">
+                            createProperty
+                        </button>
+                    </div>
+                    <FormInput
+                            v-model="newEntityRelationId"
+                            placeholder="entityRelationId" />
+                    <FormInput
+                            v-model="newEntityNameCn"
+                            placeholder="entityNameCn" />
+                    <FormInput
+                            v-model="newEntityNameEn"
+                            placeholder="entityNameEn" />
+                    <FormInput
                             v-model="newEntityId"
                             placeholder="entityId" />
+                    <FormInput
+                            v-model="newEntityComment"
+                            placeholder="entityComment" />
                     <template slot="actions">
                         <button
                                 type="button"
@@ -64,24 +107,37 @@
                 <SmartForm
                         class="form"
                         title="Please enter the elements">
+                    <div>
+                        <el-radio v-model="newLinkProperty" label="new" border size="medium">New</el-radio>
+                        <el-radio v-model="newLinkProperty" label="existed" border size="medium">Existed</el-radio>
+                    </div>
+                    <div v-if="newLinkProperty == 'new'">
+                        <FormInput
+                                v-model="newPropertyNameCn"
+                                placeholder="propertyNameCn" />
+                        <FormInput
+                                v-model="newPropertyNameEn"
+                                placeholder="propertyNameEn" />
+                        <FormInput
+                                v-model="newPropertyId"
+                                placeholder="propertyId" />
+                        <FormInput
+                                v-model="newPropertyComment"
+                                placeholder="propertyComment" />
+                        <button
+                                type="button"
+                                class="secondary"
+                                @click="createProperty">
+                            createProperty
+                        </button>
+                    </div>
                     <FormInput
-                            name="test"
                             v-model="newLinkId"
                             placeholder="LinkId" />
                     <FormInput
-                            name="test"
-                            v-model="newLinkName"
-                            placeholder="LinkName" />
-                    <FormInput
-                            name="test"
-                            v-model="newLinkDes"
-                            placeholder="LinkDescription" />
-                    <FormInput
-                            name="test"
                             v-model="newLinkSource"
                             placeholder="LinkSource" />
                     <FormInput
-                            name="test"
                             v-model="newLinkTarget"
                             placeholder="LinkTarget" />
                     <template slot="actions">
@@ -112,24 +168,37 @@
                         class="form"
                         title="Please enter the elements">
                     <FormInput
-                            name="test"
-                            v-model="currentEntityName"/>
+                            v-model="currentEntityId"
+                            placeholder="EntityId"/>
                     <FormInput
-                            name="test"
-                            v-model="currentEntityId"/>
+                            v-model="currentEntityHeadId"
+                            placeholder="currentEntityHeadId"/>
+                    <FormInput
+                            v-model="currentEntityRelationId"
+                            placeholder="currentEntityRelationId"/>
+                    <FormInput
+                            v-model="currentEntityTailId"
+                            placeholder="currentEntityTailId"/>
+                    <FormInput
+                            v-model="currentEntityName"
+                            placeholder="currentEntityName"/>
+                    <FormInput
+                            v-model="currentEntityComment"
+                            placeholder="currentEntityComment"/>
+
                     <template slot="actions">
                         <button
                                 type="button"
                                 class="secondary"
-                                @click="changeData">
-                            Change
+                                @click="changeEntity">
+                            Change Entity
                         </button>
-                        <button
+                        <!--<button
                                 type="button"
                                 class="secondary"
                                 @click="deleteData">
                             Delete
-                        </button>
+                        </button>-->
                         <button
                                 type="button"
                                 class="secondary"
@@ -145,23 +214,18 @@
                         class="form"
                         title="Please enter the elements">
                     <FormInput
-                            name="test"
                             v-model="currentLinkId"
                             placeholder="LinkId" />
                     <FormInput
-                            name="test"
                             v-model="currentLinkName"
                             placeholder="LinkName" />
                     <FormInput
-                            name="test"
                             v-model="currentLinkDes"
                             placeholder="LinkDescription" />
                     <FormInput
-                            name="test"
                             v-model="currentLinkSource"
                             placeholder="LinkSource" />
                     <FormInput
-                            name="test"
                             v-model="currentLinkTarget"
                             placeholder="LinkTarget" />
                     <template slot="actions">
@@ -169,13 +233,13 @@
                                 type="button"
                                 class="secondary"
                                 @click="changeLink">
-                            Change
+                            Change Link
                         </button>
                         <button
                                 type="button"
                                 class="secondary"
                                 @click="deleteLink">
-                            Delete
+                            Delete Link
                         </button>
                         <button
                                 type="button"
@@ -210,17 +274,32 @@
                 displayData: [],
                 displayLink: [],
 
-                newEntityName: '',
+                newEntityPos: '',
+                newEntityHeadId: '',
+                newEntityTailId: '',
+                newEntityProperty: '',
+                newEntityRelationId: '',
+                newEntityNameCn: '',
+                newEntityNameEn: '',
                 newEntityId: '',
+                newEntityComment: '',
 
+                newPropertyNameCn: '',
+                newPropertyNameEn: '',
+                newPropertyId: '',
+                newPropertyComment: '',
+
+                newLinkProperty: '',
                 newLinkId:'',
-                newLinkName: '',
-                newLinkDes:'',
                 newLinkSource: '',
                 newLinkTarget:'',
 
-                currentEntityName: '',
                 currentEntityId: '',
+                currentEntityHeadId: '',
+                currentEntityRelationId: '',
+                currentEntityTailId: '',
+                currentEntityName: '',
+                currentEntityComment: '',
 
                 currentLinkId:'',
                 currentLinkName: '',
@@ -247,14 +326,37 @@
 
             },
             createDisplay() {
-                this.displayData = this.entityData
+                //this.displayData = this.entityData
+
+                this.displayData = []
+                for (var key in this.entityData) {
+                    if (this.entityData[key].category == 1) {
+                        var currentSymbol = 'diamond'
+                    }
+                    else if (this.entityData[key].category == 2) {
+                        var currentSymbol = 'rect'
+                    }
+                    else if (this.entityData[key].category == 3) {
+                        var currentSymbol = 'circle'
+                    }
+                    var newItem = {
+                        des: this.entityData[key].des,
+                        id: this.entityData[key].id,
+                        name: this.entityData[key].name,
+                        symbol: currentSymbol,
+                        category: this.entityData[key].category
+                    }
+                    this.displayData.push(newItem)
+                }
+
                 this.displayLink = []
+                //console.log(this.displayData)
 
                 for (var key in this.entityLinks) {
                     let index = (this.propertyData || []).findIndex((item) => item.id === this.entityLinks[key].name)
                     var newItem = {
                         id: this.entityLinks[key].id, //每一个link独有的属性id
-                        name: this.entityLinks[key].name, //这种link所属的property的name(id)
+                        name: this.propertyData[index].name, //这种link所属的property的name(id)
                         des: this.propertyData[index].des,
                         source: this.entityLinks[key].source,
                         target: this.entityLinks[key].target
@@ -299,9 +401,15 @@
                                 edgeLength: [10, 50],
                                 layoutAnimation: false,
                             },
+                            draggable: true,
                             itemStyle: {
                                 normal: {
-                                    color: '#4b565b'
+                                    //color: '#4b565b'
+                                    color: function (params) {
+                                        //var colorList = ['red', 'orange', '#FFD700', 'pink']
+                                        var colorList = ['#2C71C1', '#36A2EB', 'purple', '#4BC0C0']
+                                        return colorList[params.data.category]
+                                    }
                                 }
                             },
                             lineStyle: {
@@ -327,8 +435,7 @@
                                 }
                             },
                             data: this.displayData,
-                            links: this.displayLink
-
+                            links: this.displayLink,
                         }
                     ]
                 };
@@ -343,15 +450,28 @@
                             that.mode = 'changeData'
                             that.currentEntityName = params.data.name
                             that.currentEntityId = params.data.id
+                            that.currentEntityComment = params.data.des
                         }
                         else if (params.dataType == 'edge') {
                             that.mode = 'changeLink'
-                            console.log(params)
                             that.currentLinkId = params.data.id
                             that.currentLinkName = params.data.name
                             that.currentLinkDes = params.data.des
                             that.currentLinkSource = params.data.source
                             that.currentLinkTarget = params.data.target
+                        }
+                    }
+                    if (that.mode == 'addData') {
+                        if(params.dataType == 'node') {
+                            if (that.newEntityPos == 'tail') {
+                                that.newEntityHeadId = params.data.id
+                            }
+                            else {
+                                that.newEntityTailId = params.data.id
+                            }
+                        }
+                        else {
+                            that.newEntityRelationId = params.data.id
                         }
                     }
                     if (that.mode == 'addLink') {
@@ -362,6 +482,17 @@
                             else if (that.newLinkTarget == '') {
                                 that.newLinkTarget = params.data.id
                             }
+                        }
+                        else {
+                            that.newLinkId = params.data.id
+                        }
+                    }
+                    if (that.mode == 'changeData') {
+                        if (params.dataType == 'edge') {
+                            //console.log(params.data)
+                            that.currentEntityHeadId = params.data.source
+                            that.currentEntityTailId = params.data.target
+                            that.currentEntityRelationId = params.data.id
                         }
                     }
                     if (that.mode == 'changeLink') {
@@ -376,6 +507,13 @@
                     }
 
                 })
+                myChart.on('mouseup', function (params) {
+                    var option = myChart.getOption();
+                    option.series[0].data[params.dataIndex].x = params.event.offsetX;
+                    option.series[0].data[params.dataIndex].y = params.event.offsetY;
+                    option.series[0].data[params.dataIndex].fixed = true;
+                    myChart.setOption(option);
+                })
             },
             changeModeToData() {
                 this.mode = 'addData'
@@ -385,16 +523,41 @@
                 this.mode = 'addLink'
                 console.log(this.mode)
             },
-            addData(){
-                var newData = {
+            async addData(){
+            //现在允许增加的
+                /*var newData = {
                     "name": this.newEntityName,
                     "id": this.newEntityId,
-                }
-                this.entityData.push(newData)
+                }*/
+                //this.entityData.push(newData)
+                let res = await this.$fetch('KG/createEntity', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        headId: this.newEntityHeadId,
+                        relationId: this.newEntityRelationId,
+                        tailId: this.newEntityTailId,
+                        name: this.newEntityId,
+                        comment: this.newEntityComment,
+                        nameEn: this.newEntityNameEn,
+                        nameCn: this.newEntityNameCn,
+                        division: '',
+                        from: '',
+                    }),
+                })
+                /*$.ajax({
+                    url:"http://localhost:8082/KG/createProperty",//url
+                    type:"POST",
+                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                    data:[this.newEntityId,this.newEntityComment,this.newEntityNameEn,this.newEntityNameCn,"","",""],
+                }).then((response)=>{
+                    console.log(response)
+                })
+*/
                 this.myEcharts()
                 this.goBack()
             },
             clearData() {
+                console.log(this.newEntityPos)
                 this.newEntityName = ''
                 this.newEntityId = ''
             },
@@ -403,9 +566,9 @@
                 this.clearData()
                 this.clearLink()
             },
-            addLink(){
+            async addLink(){
                 // 在entityLinks中添加name, id, source, target
-                var newLink = {
+                /*var newLink = {
                     "name": this.newLinkName,
                     "id": this.newLinkId,
                     "source": this.newLinkSource,
@@ -419,7 +582,16 @@
                     "name": this.newLinkDes,
                     "id": this.newLinkName,
                 }
-                this.propertyData.push(newProperty)
+                this.propertyData.push(newProperty)*/
+
+                let res = await this.$fetch('KG/createLink', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        headId: this.newLinkSource,
+                        relationId: this.newLinkId,
+                        tailId: this.newLinkTarget,
+                    }),
+                })
 
                 this.myEcharts()
                 this.goBack()
@@ -431,11 +603,28 @@
                 this.newLinkSource = ''
                 this.newLinkTarget = ''
             },
-            changeData() {
-                let index = (this.entityData || []).findIndex((item) => item.id === this.currentEntityId)
+            async changeEntity() {
+                /*let index = (this.entityData || []).findIndex((item) => item.id === this.currentEntityId)
                 console.log(this.entityData[index].name)
                 this.entityData[index].name = this.currentEntityName
-                this.entityData[index].id = this.currentEntityId
+                this.entityData[index].id = this.currentEntityId*/
+                let res = await this.$fetch('KG/replaceItem', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: this.currentEntityId,
+                        headId: this.currentEntityHeadId,
+                        relationId: this.currentEntityRelationId,
+                        tailId: this.currentEntityTailId,
+                        name: this.currentEntityName,
+                        comment: this.currentEntityComment,
+                        nameEn: "",
+                        nameCn: "",
+                        division: "",
+                        from: "",
+                        domain: "",
+                        range: "",
+                    }),
+                })
                 this.myEcharts()
                 this.goBack()
             },
@@ -463,19 +652,48 @@
                 this.myEcharts()
                 //this.goBack()
             },
-            deleteLink() {
-                let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkId)
-                this.entityLinks.splice(index, 1)
+            async deleteLink() {
+                /*let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkId)
+                this.entityLinks.splice(index, 1)*/
+                let res = await this.$fetch('KG/deleteLink', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        headId: this.currentLinkSource,
+                        relationId: this.currentLinkId,
+                        tailId: this.currentLinkTarget,
+                    })
+                })
                 this.myEcharts()
                 this.goBack()
+            },
+            async createProperty() {
+                let res = await this.$fetch('KG/createProperty', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: this.newPropertyId,
+                        comment: this.newPropertyComment,
+                        nameEn: this.newPropertyNameEn,
+                        nameCn: this.newPropertyNameCn,
+                        from: '',
+                        domain: '',
+                        range: '',
+                    }),
+                })
+                if (this.mode == 'addData') {
+                    this.newEntityRelationId = res.data.slice(1,8)
+                }
+                else if (this.mode == 'addLink') {
+                    this.newLinkId = res.data.slice(1,8)
+                }
+
             }
         },
 
         async created() {
             this.mode = 'empty'
-            var url = '/KG/getGraphData?id=' + this.$route.params.id
+            var url = 'KG/getGraphData?id=' + this.$route.params.id
             var response = await this.$fetch(url)
-            //console.log(response)
+            console.log(response)
             var tmpEntityData = JSON.parse(response.data).entityData
             var tmpLinks = JSON.parse(response.data).link
             var tmpPropertyData = JSON.parse(response.data).propertyData

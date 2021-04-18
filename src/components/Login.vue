@@ -115,11 +115,24 @@
             },
 
             async login () {
+                $.ajax({
+                    url:"http://localhost:8082/login",//url
+                    type:"POST",
+                    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
+                    data:encryptByDES(JSON.stringify({
+                        username: this.username,
+                        password: this.password,
+                    }),this.$state.key),
+                }).then((response)=>{
+                    this.$state.user = response
+                    console.log(this.$state.user)
+/*=======
                 $ajax("login", "POST",
                     encryptByDES(JSON.stringify({username: this.username, password: this.password,}),this.$state.key)
                 ).then((response)=>{
                   this.$state.user = response
                   console.log(this.$state.user)
+>>>>>>> c06afa5279cc021fbff48fe51ec8b5c998e90f1b*/
                 })
                 this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
             },

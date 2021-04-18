@@ -14,11 +14,12 @@ export async function $fetch(url, options) {
     const finalOptions = Object.assign({}, {
         headers: {
             'Content-Type': 'application/json',
+            "Access-Control-Allow-Origin":"*"
         },
-        credentials: 'include',
+        //credentials: 'include',
     }, options)
 
-    const response = await fetch(`${baseUrl}${url}`)
+    const response = await fetch(`${baseUrl}${url}`, finalOptions)
     if (response.ok) {
         const data = await response.json()
         return data
