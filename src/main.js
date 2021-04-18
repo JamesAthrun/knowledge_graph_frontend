@@ -18,10 +18,6 @@ Vue.use(ElementUI)
 Vue.use(VueState, state)
 
 Vue.use(VueFetch, {
-<<<<<<< HEAD
-=======
-    // baseUrl: 'http://192.168.3.15:8082/'
->>>>>>> c06afa5279cc021fbff48fe51ec8b5c998e90f1b
     baseUrl: 'http://localhost:8082/'
 })
 
