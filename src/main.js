@@ -18,7 +18,7 @@ Vue.use(ElementUI)
 Vue.use(VueState, state)
 
 Vue.use(VueFetch, {
-    baseUrl: 'http://192.168.3.15:8082/'
+    baseUrl: 'http://localhost:8082/'
 })
 
 new Vue({

@@ -117,7 +117,7 @@
 
             async login () {
                 $.ajax({
-                    url:"http://192.168.3.15:8082/login",//url
+                    url:"http://localhost:8082/login",//url
                     type:"POST",
                     headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"},
                     data:encryptByDES(JSON.stringify({

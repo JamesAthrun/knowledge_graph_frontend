@@ -89,6 +89,7 @@
             myEcharts(){
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = this.$echarts.init(document.getElementById('main'));
+                console.log(this.displayData)
 
                 // 指定图表的配置项和数据
                 var option = {
@@ -103,6 +104,29 @@
                             saveAsImage: {}
                         }
                     },
+
+                    legend: {
+                        show: true,
+                        data: [
+                            {
+                                name: 'test0',
+                                icon: 'rect',
+                            },
+                            {
+                                name: 'test1',
+                                icon: 'triangle',
+                            },
+                            {
+                                name: 'test2',
+                                icon: 'circle',
+                            },
+                            {
+                                name: 'test3',
+                                icon: 'diamond',
+                            },
+                        ]
+                    },
+
                     series: [
                         {
                             type: 'graph',
@@ -123,9 +147,14 @@
                                 edgeLength: [10, 50],
                                 layoutAnimation: false,
                             },
+                            draggable: true,
                             itemStyle: {
                                 normal: {
-                                    color: '#4b565b'
+                                    color: function (params) {
+                                        //var colorList = ['red', 'orange', '#FFD700', 'pink']
+                                        var colorList = ['#2C71C1', '#36A2EB', 'purple', '#4BC0C0']
+                                        return colorList[params.data.category]
+                                    }
                                 }
                             },
                             lineStyle: {
@@ -133,6 +162,11 @@
                                     width: 2,
                                     color: '#4b565b'
 
+                                }
+                            },
+                            textStyle: {
+                                normal: {
+                                    color: '#4b565b'
                                 }
                             },
                             edgeLabel: {
@@ -151,7 +185,25 @@
                                 }
                             },
                             data: this.displayData,
-                            links: this.displayLink
+                            links: this.displayLink,
+                            categories: [
+                                {
+                                    name: 'test0',
+                                    symbol: 'rect',
+                                },
+                                {
+                                    name: 'test1',
+                                    symbol: 'triangle',
+                                },
+                                {
+                                    name: 'test2',
+                                    symbol: 'circle',
+                                },
+                                {
+                                    name: 'test3',
+                                    symbol: 'diamond',
+                                },
+                            ]
 
                         }
                     ]
@@ -159,6 +211,14 @@
 
                 // 使用刚指定的配置项和数据显示图表。
                 myChart.setOption(option);
+                myChart.on('mouseup', function (params) {
+                    var option = myChart.getOption();
+                    option.series[0].data[params.dataIndex].x = params.event.offsetX;
+                    option.series[0].data[params.dataIndex].y = params.event.offsetY;
+                    option.series[0].data[params.dataIndex].fixed = true;
+                    myChart.setOption(option);
+                });
+
             },
         }
     }
