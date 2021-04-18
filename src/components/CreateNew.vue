@@ -4,7 +4,7 @@
         <h1>Create a new knowledge graph</h1>
         <el-upload
             class="upload-demo"
-            action="http://192.168.3.15:8082/KG/uploadFile"
+            action="http://localhost:8081/KG/uploadFile"
             drag
             :on-preview="handlePreview"
             :on-remove="handleRemove"
