@@ -1,9 +1,10 @@
 <template>
+
     <main class="create">
         <h1>Create a new knowledge graph</h1>
         <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="http://192.168.3.15:8082/KG/uploadFile"
             drag
             :on-preview="handlePreview"
             :on-remove="handleRemove"
@@ -24,13 +25,19 @@
 </template>
 
 <script>
+
+    import {$ajax} from "../plugins/request";
+
     export default {
         data() {
             return {
                 fileList: [],
-                uploadData: []
+                uploadData: [],
+                newGraphData: [],
+                headers:{'Content-type': 'application/json; charset=UTF-8',}
             };
         },
+
         methods: {
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -50,11 +57,19 @@
                 reader.onload = ((e) => {
                     this.uploadData = []
                     this.uploadData = JSON.parse(e.target.result)
-                    console.log(this.uploadData);
+                    this.newGraphData =
+                        {"entity" : this.uploadData.entity,
+                        "property": this.uploadData.property,
+                        "triple" : this.uploadData.triple}
+                    console.log(JSON.stringify(this.newGraphData));
                 })
             },
             save() {
-                this.newGraph();
+              $ajax("KG/createGraphByJsonStr","POST",
+                  JSON.stringify({"entity" : this.uploadData.entity, "property": this.uploadData.property, "triple" : this.uploadData.triple})
+              ).then(()=>{
+                  console.log("ok")
+              })
             },
             newGraph() {
                 var tmpEntityData = JSON.parse(this.uploadData.data).entityData

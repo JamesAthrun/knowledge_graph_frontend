@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import AppLayout from './components/AppLayout.vue'
 import router from "./router"
-import VueFetch, { $fetch } from './plugins/fetch'
+import VueFetch, { $fetch } from './plugins/request'
 import echarts from 'echarts'
 import './global-components'
 import ElementUI from 'element-ui' //element-ui的全部组件
@@ -18,6 +18,10 @@ Vue.use(ElementUI)
 Vue.use(VueState, state)
 
 Vue.use(VueFetch, {
+<<<<<<< HEAD
+=======
+    // baseUrl: 'http://192.168.3.15:8082/'
+>>>>>>> c06afa5279cc021fbff48fe51ec8b5c998e90f1b
     baseUrl: 'http://localhost:8082/'
 })
 
