@@ -3,6 +3,12 @@
         <div class="Echarts">
             <div id="main" style="width: 800px;height:800px;"></div>
         </div>
+        <div>
+            <el-radio v-model="graphColorTheme" label="black" border size="medium">black</el-radio>
+            <el-radio v-model="graphColorTheme" label="red" border size="medium">red</el-radio>
+            <el-radio v-model="graphColorTheme" label="blue" border size="medium">blue</el-radio>
+            <el-button type="primary" @click="myEcharts">enter</el-button>
+        </div>
         <div class="actions">
             <div v-if="mode === 'empty'">
                 <button
@@ -266,10 +272,13 @@
         data() {
             return {
                 mode: 0,
+                routeParamId: '',
                 entityTitle:'knowledge graph',
                 entityData:[],
                 propertyData: [],
                 entityLinks:[],
+
+                graphColorTheme: '',
 
                 displayData: [],
                 displayLink: [],
@@ -364,10 +373,38 @@
                     this.displayLink.push(newItem)
                 }
             },
+            async refreshData() {
+                var url = 'KG/getGraphData?id=' + this.routeParamId
+                var response = await this.$fetch(url)
+                console.log(response)
+                var tmpEntityData = JSON.parse(response.data).entityData
+                var tmpLinks = JSON.parse(response.data).link
+                var tmpPropertyData = JSON.parse(response.data).propertyData
+                this.jsonData = response.data
+                console.log(tmpEntityData)
+                console.log(tmpLinks)
+                console.log(tmpPropertyData)
+
+                this.entityData = tmpEntityData
+                this.entityLinks = tmpLinks
+                this.propertyData = tmpPropertyData
+            },
             myEcharts(){
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = this.$echarts.init(document.getElementById('main'));
                 this.createDisplay()
+
+                //color
+                if (this.graphColorTheme == 'black' || this.graphColorTheme == '') {
+                    var colorList = ['#4b565b', '#4b565b', '#4b565b', '#4b565b']
+                }
+                else if (this.graphColorTheme == 'red') {
+                    var colorList = ['red', 'orange', '#FFD700', 'pink']
+                }
+                else if (this.graphColorTheme == 'blue') {
+                    var colorList = ['#2C71C1', '#36A2EB', 'purple', '#4BC0C0']
+                }
+
                 // 指定图表的配置项和数据
                 var option = {
                     title: { text: this.entityTitle },
@@ -406,8 +443,6 @@
                                 normal: {
                                     //color: '#4b565b'
                                     color: function (params) {
-                                        //var colorList = ['red', 'orange', '#FFD700', 'pink']
-                                        var colorList = ['#2C71C1', '#36A2EB', 'purple', '#4BC0C0']
                                         return colorList[params.data.category]
                                     }
                                 }
@@ -553,6 +588,7 @@
                     console.log(response)
                 })
 */
+                this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -593,6 +629,7 @@
                     }),
                 })
 
+                this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -625,6 +662,8 @@
                         range: "",
                     }),
                 })
+
+                this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -634,9 +673,9 @@
                 this.myEcharts()
                 this.goBack()
             },
-            changeLink() {
+            async changeLink() {
                 //在entityLinks中更改name, id, source, target
-                let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkId) //利用entityLinks中唯一标识符id来更改
+                /*let index = (this.entityLinks || []).findIndex((item) => item.id === this.currentLinkId) //利用entityLinks中唯一标识符id来更改
                 console.log(this.entityLinks[index])
                 this.entityLinks[index].name = this.currentLinkName
                 this.entityLinks[index].id = this.currentLinkId
@@ -648,7 +687,26 @@
                 console.log(this.propertyData[index])
                 this.propertyData[index].des = this.currentLinkDes
                 this.propertyData[index].name = this.currentLinkDes
-                this.propertyData[index].id = this.currentLinkName
+                this.propertyData[index].id = this.currentLinkName*/
+                let res = await this.$fetch('KG/replaceItem', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: this.currentLinkId,
+                        headId: this.currentLinkSource,
+                        relationId: this.currentLinkId,
+                        tailId: this.currentLinkTarget,
+                        name: this.currentLinkName,
+                        comment: this.currentLinkDes,
+                        nameEn: "",
+                        nameCn: "",
+                        division: "",
+                        from: "",
+                        domain: "",
+                        range: "",
+                    }),
+                })
+
+                this.refreshData()
                 this.myEcharts()
                 //this.goBack()
             },
@@ -663,6 +721,8 @@
                         tailId: this.currentLinkTarget,
                     })
                 })
+
+                this.refreshData()
                 this.myEcharts()
                 this.goBack()
             },
@@ -691,7 +751,8 @@
 
         async created() {
             this.mode = 'empty'
-            var url = 'KG/getGraphData?id=' + this.$route.params.id
+            this.routeParamId = this.$route.params.id
+            var url = 'KG/getGraphData?id=' + this.routeParamId
             var response = await this.$fetch(url)
             console.log(response)
             var tmpEntityData = JSON.parse(response.data).entityData
