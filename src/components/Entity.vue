@@ -742,10 +742,10 @@
                     }),
                 })
                 if (this.mode == 'addData') {
-                    this.newEntityRelationId = res.data.slice(1,8)
+                    this.newEntityRelationId = res.data.slice(1,9)
                 }
                 else if (this.mode == 'addLink') {
-                    this.newLinkId = res.data.slice(1,8)
+                    this.newLinkId = res.data.slice(1,9)
                 }
 
             }
