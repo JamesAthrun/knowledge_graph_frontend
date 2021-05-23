@@ -258,15 +258,33 @@
             </div>
 
         </div>-->
-        <div style="height:calc(100vh - 50px);">
-            <RelationGraph ref="seeksRelationGraph" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick" />
+        <div ref="myPage" style="height:calc(100vh - 50px);">
+            <SeeksRelationGraph
+                    ref="seeksRelationGraph"
+                    :options="graphOptions"
+                    :on-node-click="onNodeClick"
+                    :on-line-click="onLineClick">
+            </SeeksRelationGraph>
+        </div>
+        <div v-if="isShowNodeTipsPanel" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;width: 200px">
+            <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
+            <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
+            <div class="c-node-menu-item">id:{{currentNode.id}}</div>
+            <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
+        </div>
+        <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;width: 200px">
+            <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideLineTips"></el-button>
+            <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
+            <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
+            <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
+            <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
         </div>
     </div>
 
 </template>
 
 <script>
-    import RelationGraph from "relation-graph";
+    import SeeksRelationGraph from "relation-graph";
 
     export default {
         /*name: 'Echarts',
@@ -321,9 +339,18 @@
             }
         },*/
         name: 'Demo',
-        components: { RelationGraph },
+        components: { SeeksRelationGraph },
         data() {
             return {
+                isShowCodePanel: false,
+                isShowNodeTipsPanel: false,
+                nodeMenuPanelPosition: { x: 0, y: 0 },
+                currentNode: {},
+
+                isShowLineTipsPanel: false,
+                lineMenuPanelPosition: { x: 0, y: 0 },
+                currentLine: {},
+
                 routeParamId: '',
                 root:'',
                 displayData: [],
@@ -337,6 +364,82 @@
             }
         },
         mounted() {
+
+        },
+
+        methods: {
+            showSeeksGraph(query) {
+                var __graph_json_data = {
+                    rootId: this.root,
+                    nodes: this.displayData,
+                    links: this.displayLink,
+                }
+                // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
+                this.$refs.seeksRelationGraph.setJsonData(__graph_json_data, (seeksRGGraph) => {
+                    // Called when the relation-graph is completed
+                })
+            },
+            onNodeClick(nodeObject, $event) {
+                console.log('onNodeClick:', nodeObject)
+                this.showNodeTips(nodeObject, $event)
+            },
+            onLineClick(lineObject, $event) {
+                console.log('onLineClick:', lineObject)
+                this.showLineTips(lineObject, $event)
+            },
+            showNodeTips(nodeObject, $event) {
+                this.currentNode = nodeObject
+                var _base_position = this.$refs.myPage.getBoundingClientRect()
+                console.log('showNodeMenus:', $event, _base_position)
+                this.isShowNodeTipsPanel = true
+                this.nodeMenuPanelPosition.x = $event.clientX - _base_position.x + 10
+                this.nodeMenuPanelPosition.y = $event.clientY - _base_position.y + 10
+            },
+            hideNodeTips(nodeObject, $event) {
+                this.isShowNodeTipsPanel = false
+            },
+            showLineTips(lineObject, $event) {
+                this.currentLine = lineObject
+                var _base_position = this.$refs.myPage.getBoundingClientRect()
+                console.log('showNodeMenus:', $event, _base_position)
+                this.isShowLineTipsPanel = true
+                this.lineMenuPanelPosition.x = $event.clientX - _base_position.x + 10
+                this.lineMenuPanelPosition.y = $event.clientY - _base_position.y + 10
+            },
+            hideLineTips(nodeObject, $event) {
+                this.isShowLineTipsPanel = false
+            }
+        },
+
+        async created() {
+            this.routeParamId = this.$route.params.id
+            var url = 'KG/getGraphData?id=' + this.routeParamId + "&ver=0"
+            var response = await this.$fetch(url)
+            console.log(response)
+            this.displayData = JSON.parse(response.data).itemData
+            this.displayLink = JSON.parse(response.data).link
+            this.root = this.displayData[0].id
+
+            console.log(this.displayData)
+            console.log(this.displayLink)
+            console.log(this.root)
+
+            this.showSeeksGraph()
+
+        }
+/*        methods:{
+        downloadJson() {
+                console.log(this.jsonData);
+                var blob = new Blob([JSON.stringify(this.jsonData)],{type: 'application/json;charset=utf-8'})
+                var downloadElement = document.createElement('a');
+                var href = window.URL.createObjectURL(blob);
+                downloadElement.href = href;
+                downloadElement.download = "data" + ".json";
+                document.body.appendChild(downloadElement);
+                downloadElement.click(); //点击下载
+                document.body.removeChild(downloadElement);
+                window.URL.revokeObjectURL(href);
+>>>>>>> Stashed changes
 
         },
 
@@ -805,61 +908,18 @@
                             this.newLinkId = res.data.slice(1,8)
                         }
 
+<<<<<<< Updated upstream
                     }
                 },*/
-
-        /*async created() {
-            this.mode = 'empty'
-            this.routeParamId = this.$route.params.id
-            var url = 'KG/getGraphData?id=' + this.routeParamId
-            var response = await this.$fetch(url)
-            console.log(response)
-            var tmpEntityData = JSON.parse(response.data).entityData
-            var tmpLinks = JSON.parse(response.data).link
-            var tmpPropertyData = JSON.parse(response.data).propertyData
-            this.jsonData = response.data
-            console.log(tmpEntityData)
-            console.log(tmpLinks)
-            console.log(tmpPropertyData)
-
-            this.entityData = tmpEntityData
-            this.entityLinks = tmpLinks
-            this.propertyData = tmpPropertyData
-            /!*console.log(response)
-            for (var key in tmpData) {
-                var newItem = {
-                    name: tmpData[key].name,
-                    id: tmpData[key].id,
-                    des: tmpData[key].des
-                }
-                if (newItem.des == '') {
-                    this.relationData.push(newItem)
-                }
-                else {
-                    this.entityData.push(newItem)
-                }
-
-            }
-            for (var key in tmpLinks) {
-                var newItem = {
-                    id: tmpLinks[key].name,
-                    source: tmpLinks[key].source,
-                    target: tmpLinks[key].target
-                }
-                this.entityLinks.push(newItem)
-            }
-
-            console.log(this.entityData)
-            console.log(this.entityLinks)
-            console.log(this.relationData)*!/
-
-            this.myEcharts();
-        },*/
-
 
     }
 </script>
 
 <style>
-
+    .c-node-menu-item{
+        line-height: 30px;padding-left: 10px;cursor: pointer;color: #444444;font-size: 14px;border-top:#efefef solid 1px;
+    }
+    .c-node-menu-item:hover{
+        background-color: rgba(66,187,66,0.2);
+    }
 </style>
