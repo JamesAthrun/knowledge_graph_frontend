@@ -1,14 +1,14 @@
 <template>
     <div class="app-layout">
-        <header class="header">
+        <NavMenu />
+        <!--<header class="header">
             <div>
                 <img class="img"
                      src="assets/logo.svg"/>
             </div>
             <div>Knowledge Graph</div>
-        </header>
+        </header>-->
 
-        <NavMenu />
         <router-view />
     </div>
 </template>

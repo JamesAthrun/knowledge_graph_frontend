@@ -132,7 +132,7 @@
                 ).then((response)=>{
                   this.$state.user = response
                   console.log(this.$state.user)
->>>>>>> c06afa5279cc021fbff48fe51ec8b5c998e90f1b*/
+  >>>>>>> c06afa5279cc021fbff48fe51ec8b5c998e90f1b*/
                 })
                 this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
             },

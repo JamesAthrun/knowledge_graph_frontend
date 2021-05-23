@@ -11,12 +11,13 @@
     "report": "vue-cli-service build --report"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "echarts": "^4.8.0",
     "element-plus": "^1.0.2-beta.35",
-    "moment": "^2.29.1",
-    "vue": "^2.5.11",
-    "axios": "^0.21.1",
     "element-ui": "^2.15.1",
+    "moment": "^2.29.1",
+    "relation-graph": "^1.1.0",
+    "vue": "^2.5.11",
     "vue-axios": "^3.2.4",
     "vue-router": "^3.0.1",
     "webpack-bundle-analyzer": "latest"
