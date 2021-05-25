@@ -258,33 +258,105 @@
             </div>
 
         </div>-->
+
         <div ref="myPage" style="height:calc(100vh - 50px);">
+            <el-row style="top:30px; margin-bottom:30px;">
+                <el-button type="primary" icon="el-icon-edit-outline" style="right: 0px; position: absolute;" round v-if="isEditMode==false" @click="startEdit">开始编辑</el-button>
+            </el-row>
+            <el-dialog title = "添加节点" :visible="addNode" v-if="addNewNode" width="50%">
+                <AddNodeModal v-show="addNode" @cancel="cancelNewNode" @submitForm='createNewNode'></AddNodeModal>
+            </el-dialog>
+
+            <el-dialog title = "添加关系" :visible="addLine" v-if="addNewLine" width="50%">
+                <AddLineModal v-show="addLine" @cancel="cancelNewLine" @submitForm='createNewLine'></AddLineModal>
+            </el-dialog>
+
+            <el-row style="margin-bottom:10px;" v-show="isEditMode">
+                <el-button type="primary" icon="el-icon-plus" round @click="addNewNode">添加节点</el-button>
+                <el-button type="primary" icon="el-icon-plus" round @click="addNewLine">添加关系</el-button>
+
+                <el-button type="warning" icon="el-icon-edit" round @click="editExistedNode">修改节点</el-button>
+                <el-button type="warning" icon="el-icon-edit" round @click="editExistedRelation">修改关系</el-button>
+
+                <el-button type="danger" icon="el-icon-minus" round>删除节点</el-button>
+                <el-button type="danger" icon="el-icon-minus" round>删除关系</el-button>
+
+                <el-button type="success" icon="el-icon-check" style="right: 0px; position: absolute;" round v-if="isEditMode==true" @click="endEdit">上传变更</el-button>
+            </el-row>
             <SeeksRelationGraph
                     ref="seeksRelationGraph"
                     :options="graphOptions"
                     :on-node-click="onNodeClick"
-                    :on-line-click="onLineClick">
+                    :on-line-click="onLineClick"
+                    style="margin-top: 100px">
             </SeeksRelationGraph>
         </div>
-        <div v-if="isShowNodeTipsPanel" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;width: 200px">
+        <div v-if="isShowNodeTipsPanel == true" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
             <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
-            <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
-            <div class="c-node-menu-item">id:{{currentNode.id}}</div>
-            <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
+            <div v-if="isEditMode == false">
+                <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
+                <div class="c-node-menu-item">id:{{currentNode.id}}</div>
+                <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
+            </div>
+            <div v-if="isEditMode == true">
+                <el-form :model="currentNode">
+                    <el-form-item label="标题" style="width:422px;height:51px;">
+                        <el-input v-model="currentNode.text" placeholder="请输入标题" autocomplete="currentNode.text"></el-input>
+                    </el-form-item>
+                    <el-form-item label="id" style="width:422px;height:51px;">
+                        <el-input v-model="currentNode.id" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="具体内容" style="width:422px;height:51px;">
+                        <el-input v-model="currentNode.data.content" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item style="margin-top: 80px">
+                        <el-button type="primary" @click="commitEditExistedNode">更改</el-button>
+                        <el-button @click="hideNodeTips">取消</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+
         </div>
-        <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;width: 200px">
-            <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideLineTips"></el-button>
-            <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
-            <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
-            <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
-            <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
+        <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
+            <div v-if="isEditMode == false">
+                <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideLineTips"></el-button>
+                <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
+                <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
+                <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
+                <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
+            </div>
+            <div v-else>
+                <el-form :model="currentLine">
+                    <el-form-item label="关系简称" style="width:422px;height:51px;">
+                        <el-input v-model="currentLine.relations[0].text" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="具体内容" style="width:422px;height:51px;">
+                        <el-input v-model="currentLine.relations[0].data.content" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="from" style="width:422px;height:51px;">
+                        <el-input v-model="currentLine.fromNode.id" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="to" style="width:422px;height:51px;">
+                        <el-input v-model="currentLine.toNode.id" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item style="margin-top: 80px">
+                        <el-button type="primary" @click="commitEditExistedLine">更改</el-button>
+                        <el-button @click="hideLineTips">取消</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+
+
         </div>
+
     </div>
 
 </template>
 
 <script>
     import SeeksRelationGraph from "relation-graph";
+    import AddNodeModal from "./AddNodeModal";
+    import AddLineModal from "./AddLineModal";
 
     export default {
         /*name: 'Echarts',
@@ -339,7 +411,11 @@
             }
         },*/
         name: 'Demo',
-        components: { SeeksRelationGraph },
+        components: {
+            SeeksRelationGraph,
+            AddNodeModal,
+            AddLineModal,
+        },
         data() {
             return {
                 isShowCodePanel: false,
@@ -351,10 +427,18 @@
                 lineMenuPanelPosition: { x: 0, y: 0 },
                 currentLine: {},
 
+                isEditMode: false,
+
+                addNode: false,
+                newNode: '',
+
+                addLine: false,
+                newLine: '',
+
                 routeParamId: '',
                 root:'',
                 displayData: [],
-                displayLink: [],
+                displayLine: [],
                 graphOptions: {
                     allowSwitchLineShape: true,
                     allowSwitchJunctionPoint: true,
@@ -372,7 +456,7 @@
                 var __graph_json_data = {
                     rootId: this.root,
                     nodes: this.displayData,
-                    links: this.displayLink,
+                    links: this.displayLine,
                 }
                 // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
                 this.$refs.seeksRelationGraph.setJsonData(__graph_json_data, (seeksRGGraph) => {
@@ -382,10 +466,22 @@
             onNodeClick(nodeObject, $event) {
                 console.log('onNodeClick:', nodeObject)
                 this.showNodeTips(nodeObject, $event)
+
+
             },
             onLineClick(lineObject, $event) {
                 console.log('onLineClick:', lineObject)
                 this.showLineTips(lineObject, $event)
+            },
+            startEdit() {
+                console.log("start edit")
+                this.isEditMode = true
+                this.hideLineTips()
+                this.hideNodeTips()
+            },
+            endEdit() {
+                console.log("end edit")
+                this.isEditMode = false
             },
             showNodeTips(nodeObject, $event) {
                 this.currentNode = nodeObject
@@ -406,9 +502,96 @@
                 this.lineMenuPanelPosition.x = $event.clientX - _base_position.x + 10
                 this.lineMenuPanelPosition.y = $event.clientY - _base_position.y + 10
             },
-            hideLineTips(nodeObject, $event) {
+            hideLineTips(lineObject, $event) {
                 this.isShowLineTipsPanel = false
+            },
+
+            addNewNode(){
+                this.addNode = true
+                this.newNode = {
+                    id: '',
+                    text: '',
+                    data:{content: '',}
+                }
+            },
+            createNewNode(form) {
+                this.addNode = false
+                this.newNode.id = form.id
+                this.newNode.text = form.text
+                this.newNode.data.content = form.content
+                //console.log(this.newNode)
+
+                this.displayData.push(this.newNode)
+
+                var __graph_json_data = {
+                    rootId: this.rootId,
+                    nodes: [
+                        this.newNode
+                    ],
+                    links: [],
+                }
+                // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
+                this.$refs.seeksRelationGraph.appendJsonData(__graph_json_data, (seeksRGGraph) => {
+                    // Called when the relation-graph is completed
+                })
+            },
+            cancelNewNode(){
+                this.addNode = false
+            },
+
+            addNewLine(){
+                this.addLine = true
+                this.newLine = {
+                    from: '',
+                    to: '',
+                    text: '',
+                }
+            },
+            createNewLine(form) {
+                this.addLine = false
+                this.newLine.from = form.from
+                this.newLine.to = form.to
+                this.newLine.text = form.text
+
+                this.displayLine.push(this.newLine)
+
+                var __graph_json_data = {
+                    rootId: this.rootId,
+                    nodes: [],
+                    links: [
+                        this.newLine
+                    ],
+                }
+                // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
+                this.$refs.seeksRelationGraph.appendJsonData(__graph_json_data, (seeksRGGraph) => {
+                    // Called when the relation-graph is completed
+                })
+            },
+            cancelNewLine() {
+                this.addLine = false
+            },
+
+            editExistedNode() {
+                this.$message({
+                    message: '请点击图中节点进行修改',
+                    type: 'warning'
+                });
+            },
+            commitEditExistedNode() {
+                this.isShowNodeTipsPanel = false
+                console.log(this.isShowNodeTipsPanel)
+            },
+
+            editExistedRelation() {
+                this.$message({
+                    message: '请点击图中关系进行修改',
+                    type: 'warning'
+                });
+            },
+            commitEditExistedLine() {
+                this.hideLineTips()
             }
+
         },
 
         async created() {
@@ -417,11 +600,11 @@
             var response = await this.$fetch(url)
             console.log(response)
             this.displayData = JSON.parse(response.data).itemData
-            this.displayLink = JSON.parse(response.data).link
+            this.displayLine = JSON.parse(response.data).link
             this.root = this.displayData[0].id
 
             console.log(this.displayData)
-            console.log(this.displayLink)
+            console.log(this.displayLine)
             console.log(this.root)
 
             this.showSeeksGraph()
@@ -465,7 +648,7 @@
 
         async created() {
             this.routeParamId = this.$route.params.id
-            var url = 'KG/getGraphData?id=' + this.routeParamId+"&ver=0"
+            var url = 'KG/getGraphData?id=' + this.routeParamId
             var response = await this.$fetch(url)
             console.log(response)
             this.displayData = JSON.parse(response.data).itemData
