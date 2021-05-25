@@ -78,44 +78,6 @@
 </template>
 
 <script>
-    // import RemoteData from "../mixin/RemoteData"
-    //
-    // export default {
-    //     data() {
-    //         return {
-    //             message: '',
-    //             searchResultList: [],
-    //             isSearched: false,
-    //         }
-    //     },
-    //     mixins: [
-    //         RemoteData({
-    //             searchResultList: 'questions'
-    //         }),
-    //     ],
-    //     methods: {
-    //         async search() {
-    //             this.isSearched = true
-    //             console.log(this.message)
-    //             //this.searchResultList = await this.$fetch('questions')
-    //             this.searchResultList = [{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"{\"_language\":\"zh\",\"_value\":\"成年人\"}","id":"95393"}]
-    //             var url = 'KG/search?keywords=' + this.message
-    //             var response = await this.$fetch(url)
-    //             this.searchResultList = JSON.parse(response.data).data
-    //             //console.log(this.searchResultList)
-    //             //console.log(this.searchResultList[0].id)
-    //             //this.searchResultList = [{"name":"http://www.openkg.cn/COVID-19/prevention#成年人","id":"87114"},{"name":"{\"_language\":\"zh\",\"_value\":\"成年人\"}","id":"95393"}]
-    //         },
-    //         clear() {
-    //             this.message = ''
-    //         },
-    //
-    //         getEntity(id) {
-    //             console.log()
-    //             this.$router.push(`/entity/${id}`)
-    //         },
-    //     }
-    // }
     import Store from "../utils/store";
     import {$ajax} from "../plugins/request";
     export default {
@@ -200,9 +162,6 @@
 </script>
 
 <style>
-    .left {
-        margin-left: 200px;
-    }
     .searchBox{
         display: flex;
         justify-content: center;

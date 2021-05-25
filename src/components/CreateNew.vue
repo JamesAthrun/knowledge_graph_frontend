@@ -71,110 +71,14 @@
                   console.log("ok")
               })
             },
-            newGraph() {
-                var tmpEntityData = JSON.parse(this.uploadData.data).entityData
-                var tmpLinks = JSON.parse(this.uploadData.data).link
-                var tmpPropertyData = JSON.parse(this.uploadData.data).propertyData
-                console.log(tmpEntityData)
-                console.log(tmpLinks)
-                console.log(tmpPropertyData)
 
-                this.entityData = tmpEntityData
-                this.entityLinks = tmpLinks
-                this.propertyData = tmpPropertyData
-
-
-                this.displayData = this.entityData
-                this.displayLink = []
-
-                for (var key in this.entityLinks) {
-                    let index = (this.propertyData || []).findIndex((item) => item.id === this.entityLinks[key].name)
-                    var newItem = {
-                        id: this.entityLinks[key].id, //每一个link独有的属性id
-                        name: this.entityLinks[key].name, //这种link所属的property的name(id)
-                        des: this.propertyData[index].des,
-                        source: this.entityLinks[key].source,
-                        target: this.entityLinks[key].target
-                    }
-                    this.displayLink.push(newItem)
-                }
-
-                this.myEcharts();
-            },
-            myEcharts(){
-                // 基于准备好的dom，初始化echarts实例
-                var myChart = this.$echarts.init(document.getElementById('main'));
-
-                // 指定图表的配置项和数据
-                var option = {
-                    title: { text: this.entityTitle },
-                    tooltip: {
-                        formatter: function (x) {
-                            return x.data.des;
-                        }
-                    },
-                    toolbox: {
-                        feature :{
-                            saveAsImage: {}
-                        }
-                    },
-                    series: [
-                        {
-                            type: 'graph',
-                            layout: 'force',
-                            symbolSize: 80,
-                            roam: 'scale',
-                            edgeSymbol: ['circle', 'arrow'],
-                            edgeSymbolSize: [4, 10],
-                            edgeLabel: {
-                                normal: {
-                                    textStyle: {
-                                        fontSize: 20
-                                    }
-                                }
-                            },
-                            force: {
-                                repulsion: 2500,
-                                edgeLength: [10, 50],
-                                layoutAnimation: false,
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#4b565b'
-                                }
-                            },
-                            lineStyle: {
-                                normal: {
-                                    width: 2,
-                                    color: '#4b565b'
-
-                                }
-                            },
-                            edgeLabel: {
-                                normal: {
-                                    show: true,
-                                    formatter: function (x) {
-                                        return x.data.name;
-                                    }
-                                }
-                            },
-                            label: {
-                                normal: {
-                                    show: true,
-                                    textStyle: {
-                                    }
-                                }
-                            },
-                            data: this.displayData,
-                            links: this.displayLink
-
-                        }
-                    ]
-                };
-
-                // 使用刚指定的配置项和数据显示图表。
-                myChart.setOption(option);
-            },
         }
     }
 </script>
+
+<style>
+    .upload-demo{
+        justify-content: center;
+        align-items: center;
+    }
+</style>

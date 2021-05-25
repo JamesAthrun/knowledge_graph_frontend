@@ -465,7 +465,7 @@
 
         async created() {
             this.routeParamId = this.$route.params.id
-            var url = 'KG/getGraphData?id=' + this.routeParamId
+            var url = 'KG/getGraphData?id=' + this.routeParamId+"&ver=0"
             var response = await this.$fetch(url)
             console.log(response)
             this.displayData = JSON.parse(response.data).itemData
