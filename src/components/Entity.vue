@@ -278,8 +278,8 @@
                 <el-button type="warning" icon="el-icon-edit" round @click="editExistedNode">修改节点</el-button>
                 <el-button type="warning" icon="el-icon-edit" round @click="editExistedRelation">修改关系</el-button>
 
-                <el-button type="danger" icon="el-icon-minus" round>删除节点</el-button>
-                <el-button type="danger" icon="el-icon-minus" round>删除关系</el-button>
+                <el-button type="danger" icon="el-icon-minus" round @click="deleteNode">删除节点</el-button>
+                <el-button type="danger" icon="el-icon-minus" round @click="deleteLine">删除关系</el-button>
 
                 <el-button type="success" icon="el-icon-check" style="right: 0px; position: absolute;" round v-if="isEditMode==true" @click="endEdit">上传变更</el-button>
             </el-row>
@@ -292,59 +292,79 @@
             </SeeksRelationGraph>
         </div>
         <div v-if="isShowNodeTipsPanel == true" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
-            <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
             <div v-if="isEditMode == false">
+                <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
                 <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
                 <div class="c-node-menu-item">id:{{currentNode.id}}</div>
                 <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
             </div>
             <div v-if="isEditMode == true">
-                <el-form :model="currentNode">
-                    <el-form-item label="标题" style="width:422px;height:51px;">
-                        <el-input v-model="currentNode.text" placeholder="请输入标题" autocomplete="currentNode.text"></el-input>
-                    </el-form-item>
-                    <el-form-item label="id" style="width:422px;height:51px;">
-                        <el-input v-model="currentNode.id" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="具体内容" style="width:422px;height:51px;">
-                        <el-input v-model="currentNode.data.content" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item style="margin-top: 80px">
-                        <el-button type="primary" @click="commitEditExistedNode">更改</el-button>
-                        <el-button @click="hideNodeTips">取消</el-button>
-                    </el-form-item>
-                </el-form>
+                <div v-if="isDeleteNode">
+                    <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
+                    <div class="c-node-menu-item">id:{{currentNode.id}}</div>
+                    <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
+                    <el-button type="primary" @click="commitDeleteNode(currentNode)">删除</el-button>
+                    <el-button @click="hideNodeTips">取消</el-button>
+                </div>
+                <div v-else>
+                    <el-form :model="currentNode">
+                        <el-form-item label="标题" style="width:422px;height:51px;">
+                            <el-input v-model="currentNode.text" placeholder="请输入标题" autocomplete="currentNode.text"></el-input>
+                        </el-form-item>
+                        <el-form-item label="id" style="width:422px;height:51px;">
+                            <el-input v-model="currentNode.id" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="具体内容" style="width:422px;height:51px;">
+                            <el-input v-model="currentNode.data.content" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item style="margin-top: 80px">
+                            <el-button type="primary" @click="commitEditExistedNode">更改</el-button>
+                            <el-button @click="hideNodeTips">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+
             </div>
 
         </div>
         <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
             <div v-if="isEditMode == false">
-                <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideLineTips"></el-button>
                 <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
                 <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
                 <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
                 <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
             </div>
             <div v-else>
-                <el-form :model="currentLine">
-                    <el-form-item label="关系简称" style="width:422px;height:51px;">
-                        <el-input v-model="currentLine.relations[0].text" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="具体内容" style="width:422px;height:51px;">
-                        <el-input v-model="currentLine.relations[0].data.content" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="from" style="width:422px;height:51px;">
-                        <el-input v-model="currentLine.fromNode.id" autocomplete="off" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="to" style="width:422px;height:51px;">
-                        <el-input v-model="currentLine.toNode.id" autocomplete="off" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item style="margin-top: 80px">
-                        <el-button type="primary" @click="commitEditExistedLine">更改</el-button>
-                        <el-button @click="hideLineTips">取消</el-button>
-                    </el-form-item>
-                </el-form>
+                <div v-if="isDeleteLine">
+                    <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
+                    <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
+                    <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
+                    <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
+                    <el-button type="primary" @click="commitDeleteLine(currentLine)">删除</el-button>
+                    <el-button @click="hideLineTips">取消</el-button>
+                </div>
+                <div v-else >
+                    <el-form :model="currentLine">
+                        <el-form-item label="关系简称" style="width:422px;height:51px;">
+                            <el-input v-model="currentLine.relations[0].text" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="具体内容" style="width:422px;height:51px;">
+                            <el-input v-model="currentLine.relations[0].data.content" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="from" style="width:422px;height:51px;">
+                            <el-input v-model="currentLine.fromNode.id" autocomplete="off" disabled></el-input>
+                        </el-form-item>
+                        <el-form-item label="to" style="width:422px;height:51px;">
+                            <el-input v-model="currentLine.toNode.id" autocomplete="off" disabled></el-input>
+                        </el-form-item>
+                        <el-form-item style="margin-top: 80px">
+                            <el-button type="primary" @click="commitEditExistedLine">更改</el-button>
+                            <el-button @click="hideLineTips">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
             </div>
+
 
 
         </div>
@@ -434,6 +454,12 @@
 
                 addLine: false,
                 newLine: '',
+
+                isEditExistedNode: false,
+                isEditExistedLine: false,
+
+                isDeleteNode: false,
+                isDeleteLine: false,
 
                 routeParamId: '',
                 root:'',
@@ -576,6 +602,7 @@
                     message: '请点击图中节点进行修改',
                     type: 'warning'
                 });
+                this.isEditExistedNode = true
             },
             commitEditExistedNode() {
                 this.isShowNodeTipsPanel = false
@@ -590,6 +617,64 @@
             },
             commitEditExistedLine() {
                 this.hideLineTips()
+            },
+
+            deleteNode() {
+                this.$message({
+                    message: '请点击图中节点进行删除',
+                    type: 'warning'
+                });
+                this.isDeleteNode = true
+            },
+            commitDeleteNode(nodeObject) {
+                this.$confirm('此操作将永久删除该节点, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    this.$refs.seeksRelationGraph.removeNodeById(nodeObject.id)
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+                this.isDeleteNode = false
+                this.hideNodeTips(nodeObject)
+            },
+
+            deleteLine() {
+                this.$message({
+                    message: '请点击图中关系进行删除',
+                    type: 'warning'
+                });
+                this.isDeleteLine = true
+            },
+            commitDeleteLine(lineObject) {
+                this.$confirm('此操作将永久删除该此关系, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    lineObject.fromNode.id = 0
+                    lineObject.toNode.id = 0
+                    lineObject.isHide = true
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+                this.isDeleteLine = false
+                this.hideLineTips(lineObject)
             }
 
         },
