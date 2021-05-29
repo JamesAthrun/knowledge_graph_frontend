@@ -1,7 +1,8 @@
 <template>
+
     <main class="home">
         <div>
-            <el-row>
+            <el-row class="searchBox">
                 <el-col :span="8" class="center">
                     <el-input
                             v-model="search"
@@ -79,6 +80,7 @@
 
 <script>
     import Store from "../utils/store";
+
     import {$ajax} from "../plugins/request";
     export default {
         data() {

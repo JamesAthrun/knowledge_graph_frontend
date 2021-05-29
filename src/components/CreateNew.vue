@@ -71,7 +71,6 @@
                   console.log("ok")
               })
             },
-
         }
     }
 </script>
