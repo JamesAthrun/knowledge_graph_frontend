@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="overflow:-Scroll;overflow-y:hidden" >
         <!--<div class="Echarts">
             <div id="main" style="width: 800px;height:800px;"></div>
         </div>
@@ -271,15 +271,15 @@
                 <AddLineModal v-show="addLine" @cancel="cancelNewLine" @submitForm='createNewLine'></AddLineModal>
             </el-dialog>
 
-            <el-row style="margin-bottom:10px;" v-show="isEditMode">
-                <el-button type="primary" icon="el-icon-plus" round @click="addNewNode">添加节点</el-button>
-                <el-button type="primary" icon="el-icon-plus" round @click="addNewLine">添加关系</el-button>
+            <el-row v-show="isEditMode">
+                <el-button type="primary" icon="el-icon-plus" plain @click="addNewNode">添加节点</el-button>
+                <el-button type="primary" icon="el-icon-plus" plain @click="addNewLine">添加关系</el-button>
 
-                <el-button type="warning" icon="el-icon-edit" round @click="editExistedNode">修改节点</el-button>
-                <el-button type="warning" icon="el-icon-edit" round @click="editExistedRelation">修改关系</el-button>
+                <el-button type="warning" icon="el-icon-edit" plain @click="editExistedNode">修改节点</el-button>
+                <el-button type="warning" icon="el-icon-edit" plain @click="editExistedRelation">修改关系</el-button>
 
-                <el-button type="danger" icon="el-icon-minus" round @click="deleteNode">删除节点</el-button>
-                <el-button type="danger" icon="el-icon-minus" round @click="deleteLine">删除关系</el-button>
+                <el-button type="danger" icon="el-icon-minus" plain @click="deleteNode">删除节点</el-button>
+                <el-button type="danger" icon="el-icon-minus" plain @click="deleteLine">删除关系</el-button>
 
                 <el-button type="success" icon="el-icon-check" style="right: 0px; position: absolute;" round v-if="isEditMode==true" @click="endEdit">上传变更</el-button>
             </el-row>
@@ -288,7 +288,7 @@
                     :options="graphOptions"
                     :on-node-click="onNodeClick"
                     :on-line-click="onLineClick"
-                    style="margin-top: 100px">
+                    style="margin-top: 100px; height: 70%">
             </SeeksRelationGraph>
         </div>
         <div v-if="isShowNodeTipsPanel == true" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
@@ -329,6 +329,7 @@
         </div>
         <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
             <div v-if="isEditMode == false">
+                <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideLineTips"></el-button>
                 <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
                 <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
                 <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
@@ -508,6 +509,8 @@
             endEdit() {
                 console.log("end edit")
                 this.isEditMode = false
+                this.isDeleteLine = false
+                this.isDeleteNode = false
             },
             showNodeTips(nodeObject, $event) {
                 this.currentNode = nodeObject
@@ -519,6 +522,7 @@
             },
             hideNodeTips(nodeObject, $event) {
                 this.isShowNodeTipsPanel = false
+                this.isDeleteNode = false
             },
             showLineTips(lineObject, $event) {
                 this.currentLine = lineObject
@@ -530,6 +534,7 @@
             },
             hideLineTips(lineObject, $event) {
                 this.isShowLineTipsPanel = false
+                this.isDeleteLine = false
             },
 
             addNewNode(){
@@ -560,6 +565,8 @@
                 this.$refs.seeksRelationGraph.appendJsonData(__graph_json_data, (seeksRGGraph) => {
                     // Called when the relation-graph is completed
                 })
+
+
             },
             cancelNewNode(){
                 this.addNode = false
@@ -624,9 +631,16 @@
                     message: '请点击图中节点进行删除',
                     type: 'warning'
                 });
+
+
                 this.isDeleteNode = true
             },
-            commitDeleteNode(nodeObject) {
+            /*async commitDeleteNode(nodeObject) {
+                await commitDeleteFrontEnd(nodeObject)
+            },*/
+
+            async commitDeleteNode(nodeObject) {
+                let isDeleted = false
                 this.$confirm('此操作将永久删除该节点, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -636,13 +650,55 @@
                         type: 'success',
                         message: '删除成功!'
                     });
+
+                    //在前端进行删除
                     this.$refs.seeksRelationGraph.removeNodeById(nodeObject.id)
+                    isDeleted = true
+                    /*let res = await this.$fetch('KG/commitChange', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            "op": 'deleteItem',
+                            "id": nodeObject.id,
+                            "comment": "",
+                            "division": "",
+                            "headId": "",
+                            "name": "",
+                            "relationId": "",
+                            "tableId": "",
+                            "tailId": "",
+                            "title": "",
+                            "user": ""
+                        }),
+                    })*/
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
                     });
                 });
+
+                //在后端进行删除
+                console.log(isDeleted)
+                if (isDeleted == true) {
+                    let res = await this.$fetch('KG/commitChange', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            "op": 'deleteItem',
+                            "id": nodeObject.id,
+                            "comment": "",
+                            "division": "",
+                            "headId": "",
+                            "name": "",
+                            "relationId": "",
+                            "tableId": "",
+                            "tailId": "",
+                            "title": "",
+                            "user": ""
+                        }),
+                    })
+                    console.log("test")
+                }
+
                 this.isDeleteNode = false
                 this.hideNodeTips(nodeObject)
             },
