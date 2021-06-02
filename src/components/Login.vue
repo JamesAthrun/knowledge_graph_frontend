@@ -100,14 +100,14 @@
             let k = cryptico.generateRSAKey(sth,1024)
             let modulus = String(k.n)
             let exponent = String(k.e)
-            console.log(modulus,exponent)
+            // console.log(modulus,exponent)
             $ajax("Verify/getDesKey","POST",
                 JSON.stringify({"exponent":exponent,"modulus":modulus}),
             ).then((response)=>{
               let des_key_s = JSON.parse(response.data).key
               let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
               this.$state.key = des_key
-              console.log(this.$state.key)
+              //console.log(this.$state.key)
             })
         },
         methods: {
@@ -116,17 +116,29 @@
             },
 
             async login () {
+                console.log(encryptByDES(JSON.stringify({username: this.username, password: this.password}), this.$state.key))
+                console.log(this.$state.key)
                 $ajax("login","POST",encryptByDES(JSON.stringify({
-                    username: this.username,
-                    password: this.password,
+                    name: this.username,
+                    pwd: this.password,
                 }),this.$state.key)).then((response)=>{
-                    this.$state.user = this.username
-                    this.$state.authority = JSON.parse(response.data).authority
-                    UserState.login([this.$state.user, this.$state.authority])
-                    console.log(UserState.check())
 
+                    console.log(response)
+                    if(response.message=="pwd not match" || response.message=="unknownException"){
+                        this.$message({
+                            type: 'error',
+                            message: '用户名或密码错误！'
+                        });
+                    }
+                    else{
+                        this.$state.user = this.username
+                        this.$state.authority = JSON.parse(response.data).authority
+                        UserState.login([this.$state.user, this.$state.authority])
+                        console.log(UserState.check())
+                        this.$router.push(`/${this.username}`)
+                    }
                 })
-                this.$router.push({path:'/myHome'})
+
                 // this.$router.replace(this.$route.params.wantedRoute || { name: 'home' })
             },
 

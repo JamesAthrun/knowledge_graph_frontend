@@ -30,8 +30,8 @@
                     <el-menu-item index="/login">登录</el-menu-item>
                 </div>
                 <div v-else>
-                    <el-menu-item index="/myHome">{{this.$state.user}}</el-menu-item>
-                    <el-menu-item index="/myHome">知识图谱</el-menu-item>
+                    <el-menu-item :index="this.$state.user">{{this.$state.user}}</el-menu-item>
+                    <el-menu-item :index="this.$state.user+'/myKG'">知识图谱</el-menu-item>
                     <el-menu-item index="/myHome" @click="logout">注销</el-menu-item>
                 </div>
 
