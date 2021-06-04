@@ -1,5 +1,5 @@
 <template>
-    <div style="overflow:-Scroll;overflow-y:hidden" >
+    <div >
         <!--<div class="Echarts">
             <div id="main" style="width: 800px;height:800px;"></div>
         </div>
@@ -268,7 +268,7 @@
             </el-dialog>
 
             <el-dialog title = "添加关系" :visible="addLine" v-if="addNewLine" width="50%">
-                <AddLineModal v-show="addLine" @cancel="cancelNewLine" @submitForm='createNewLine'></AddLineModal>
+                <AddLineModal v-show="addLine" :displayData="displayData" :propertyList="propertyList" @cancel="cancelNewLine" @submitForm='createNewLine'></AddLineModal>
             </el-dialog>
 
             <el-row v-show="isEditMode">
@@ -283,43 +283,50 @@
 
                 <el-button type="success" icon="el-icon-check" style="right: 0px; position: absolute;" round v-if="isEditMode==true" @click="endEdit">上传变更</el-button>
             </el-row>
+
             <SeeksRelationGraph
                     ref="seeksRelationGraph"
                     :options="graphOptions"
                     :on-node-click="onNodeClick"
                     :on-line-click="onLineClick"
-                    style="margin-top: 100px; height: 70%">
+                    style="margin-top: 100px; height: 70%; width: 100%; float: right;">
             </SeeksRelationGraph>
         </div>
         <div v-if="isShowNodeTipsPanel == true" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
             <div v-if="isEditMode == false">
                 <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
-                <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
-                <div class="c-node-menu-item">id:{{currentNode.id}}</div>
-                <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
+                <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点：{{currentNode.text}}</div>
+                <div class="c-node-menu-item">编号:{{currentNode.id}}</div>
+                <div class="c-node-menu-item">全名:{{currentNode.data.name}}</div>
             </div>
             <div v-if="isEditMode == true">
-                <div v-if="isDeleteNode">
-                    <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点名称：{{currentNode.text}}</div>
+                <div v-if="isDeleteNode" style="margin-left: 0px">
+                    <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点：{{currentNode.text}}</div>
                     <div class="c-node-menu-item">id:{{currentNode.id}}</div>
-                    <div class="c-node-menu-item">content:{{currentNode.data.content}}</div>
+                    <div class="c-node-menu-item">content:{{currentNode.data.name}}</div>
                     <el-button type="primary" @click="commitDeleteNode(currentNode)">删除</el-button>
                     <el-button @click="hideNodeTips">取消</el-button>
                 </div>
                 <div v-else>
                     <el-form :model="currentNode">
-                        <el-form-item label="标题" style="width:422px;height:51px;">
-                            <el-input v-model="currentNode.text" placeholder="请输入标题" autocomplete="currentNode.text"></el-input>
+                        <el-form-item label="缩写" style="width:422px;height:51px;">
+                            <el-input v-model="currentNode.text" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="id" style="width:422px;height:51px;">
-                            <el-input v-model="currentNode.id" autocomplete="off"></el-input>
+                            <el-input v-model="currentNode.id" autocomplete="off" disabled></el-input>
                         </el-form-item>
                         <el-form-item label="具体内容" style="width:422px;height:51px;">
-                            <el-input v-model="currentNode.data.content" autocomplete="off"></el-input>
+                            <el-input v-model="currentNode.data.name" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="title" style="width:422px;height:51px;">
+                            <el-input v-model="currentNode.data.title" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="comment" style="width:422px;height:51px;">
+                            <el-input v-model="currentNode.data.comment" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item style="margin-top: 80px">
                             <el-button type="primary" @click="commitEditExistedNode">更改</el-button>
-                            <el-button @click="hideNodeTips">取消</el-button>
+                            <el-button @click="exitEditExistedNode">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -327,18 +334,18 @@
             </div>
 
         </div>
-        <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
+        <div v-if="isShowLineTipsPanel" :style="{left: lineMenuPanelPosition.x + 'px', top: lineMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc; position: absolute;">
             <div v-if="isEditMode == false">
                 <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideLineTips"></el-button>
                 <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
-                <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
+                <div class="c-node-menu-item">content:{{currentLine.relations[0].data.name}}</div>
                 <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
                 <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
             </div>
             <div v-else>
                 <div v-if="isDeleteLine">
                     <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">关系名称：{{currentLine.relations[0].text}}</div>
-                    <div class="c-node-menu-item">content:{{currentLine.relations[0].data.content}}</div>
+                    <div class="c-node-menu-item">content:{{currentLine.relations[0].data.name}}</div>
                     <div class="c-node-menu-item">from:{{currentLine.fromNode.id}}</div>
                     <div class="c-node-menu-item">to:{{currentLine.toNode.id}}</div>
                     <el-button type="primary" @click="commitDeleteLine(currentLine)">删除</el-button>
@@ -350,7 +357,7 @@
                             <el-input v-model="currentLine.relations[0].text" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="具体内容" style="width:422px;height:51px;">
-                            <el-input v-model="currentLine.relations[0].data.content" autocomplete="off"></el-input>
+                            <el-input v-model="currentLine.relations[0].data.name" autocomplete="off"></el-input>
                         </el-form-item>
                         <el-form-item label="from" style="width:422px;height:51px;">
                             <el-input v-model="currentLine.fromNode.id" autocomplete="off" disabled></el-input>
@@ -360,7 +367,7 @@
                         </el-form-item>
                         <el-form-item style="margin-top: 80px">
                             <el-button type="primary" @click="commitEditExistedLine">更改</el-button>
-                            <el-button @click="hideLineTips">取消</el-button>
+                            <el-button @click="exitEditExistedLine">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -443,12 +450,15 @@
                 isShowNodeTipsPanel: false,
                 nodeMenuPanelPosition: { x: 0, y: 0 },
                 currentNode: {},
+                currentNodeOrigin: {},
 
                 isShowLineTipsPanel: false,
                 lineMenuPanelPosition: { x: 0, y: 0 },
                 currentLine: {},
+                currentLineOrigin: {},
 
                 isEditMode: false,
+                currentEditMode: 'null',
 
                 addNode: false,
                 newNode: '',
@@ -469,9 +479,18 @@
                 graphOptions: {
                     allowSwitchLineShape: true,
                     allowSwitchJunctionPoint: true,
-                    defaultJunctionPoint: 'border'
+                    defaultJunctionPoint: 'border',
+                    disableZoom: true,
                     // 这里可以参考"Graph 图谱"中的参数进行设置
-                }
+                },
+
+                tableId: 0,
+                currentCreateId: 1,
+                user: this.$state.user,
+                propertyList: [],
+
+                commitOperationList:[],
+                isolatedNodeList:[],
             }
         },
         mounted() {
@@ -492,12 +511,12 @@
             },
             onNodeClick(nodeObject, $event) {
                 console.log('onNodeClick:', nodeObject)
+                this.hideLineTips()
                 this.showNodeTips(nodeObject, $event)
-
-
             },
             onLineClick(lineObject, $event) {
                 console.log('onLineClick:', lineObject)
+                this.hideNodeTips()
                 this.showLineTips(lineObject, $event)
             },
             startEdit() {
@@ -506,14 +525,36 @@
                 this.hideLineTips()
                 this.hideNodeTips()
             },
-            endEdit() {
+            async endEdit() {
                 console.log("end edit")
                 this.isEditMode = false
                 this.isDeleteLine = false
                 this.isDeleteNode = false
+
+                for(var i = 0; i < this.commitOperationList.length; i ++) {
+                    let currentCommitOperation = this.commitOperationList[i]
+                    let res = await this.$fetch('KG/commitChange', {
+                        method: 'POST',
+                        body: JSON.stringify(currentCommitOperation),
+                    })
+                }
+
+                let res = await this.$fetch('KG/confirmChange', {
+                    method: 'GET',
+                    body: JSON.stringify({
+                        "userName": this.user
+                    })
+                })
+
+                this.commitOperationList = []
+
+
             },
             showNodeTips(nodeObject, $event) {
                 this.currentNode = nodeObject
+                this.currentNodeOrigin.data = JSON.parse(JSON.stringify(nodeObject.data))
+                this.currentNodeOrigin.text = this.currentNode.text
+
                 var _base_position = this.$refs.myPage.getBoundingClientRect()
                 console.log('showNodeMenus:', $event, _base_position)
                 this.isShowNodeTipsPanel = true
@@ -526,6 +567,8 @@
             },
             showLineTips(lineObject, $event) {
                 this.currentLine = lineObject
+                this.currentLineOrigin.text = this.currentLine.relations[0].text
+                this.currentLineOrigin.data = JSON.parse(JSON.stringify(this.currentLine.relations[0].data))
                 var _base_position = this.$refs.myPage.getBoundingClientRect()
                 console.log('showNodeMenus:', $event, _base_position)
                 this.isShowLineTipsPanel = true
@@ -542,14 +585,24 @@
                 this.newNode = {
                     id: '',
                     text: '',
-                    data:{content: '',}
+                    data:
+                        {
+                            name: '',
+                            comment: '',
+                            division: '',
+                            tableId: this.tableId,
+                            title: '',
+                        }
                 }
             },
             createNewNode(form) {
                 this.addNode = false
-                this.newNode.id = form.id
                 this.newNode.text = form.text
-                this.newNode.data.content = form.content
+                this.newNode.data.name = form.name
+
+                this.newNode.id = this.currentCreateId.toString()
+                this.currentCreateId += 1
+
                 //console.log(this.newNode)
 
                 this.displayData.push(this.newNode)
@@ -566,6 +619,22 @@
                     // Called when the relation-graph is completed
                 })
 
+                this.isolatedNodeList.push(this.newNode)
+
+                let commitForm = {
+                    "comment": "",
+                    "division": "Class",
+                    "headId": "",
+                    "id": this.newNode.id,
+                    "name": this.newNode.text,
+                    "op": 'createItem',
+                    "relationId": "",
+                    "tableId": this.tableId,
+                    "tailId": "",
+                    "title": "",
+                    "user": ""
+                }
+                this.commitOperationList.push(commitForm)
 
             },
             cancelNewNode(){
@@ -580,6 +649,15 @@
                     text: '',
                 }
             },
+
+            isIsolatedNode(id){
+                for (var i = 0; i < this.isolatedNodeList.length; i ++) {
+                    if (id == this.isolatedNodeList[i].id) {
+                        return true
+                    }
+                }
+            },
+
             createNewLine(form) {
                 this.addLine = false
                 this.newLine.from = form.from
@@ -599,6 +677,50 @@
                 this.$refs.seeksRelationGraph.appendJsonData(__graph_json_data, (seeksRGGraph) => {
                     // Called when the relation-graph is completed
                 })
+
+                //fromNode或者toNode中是否包含新建节点, 如果包含就createItem
+                if(this.isIsolatedNode(this.newLine.from) || this.isIsolatedNode(this.newLine.to)){
+
+                }
+
+                if(form.isNew == false) {
+                    let commitForm = {
+                        "comment": "",
+                        "division": "",
+                        "headId": this.newLine.from,
+                        "id": "",
+                        "name": "",
+                        "op": 'createLink',
+                        "relationId": form.id,
+                        "tableId": this.tableId,
+                        "tailId": form.to,
+                        "title": "",
+                        "user": ""
+                    }
+                    this.commitOperationList.push(commitForm)
+                }
+                else {
+                    this.newLine.id = this.currentCreateId.toString()
+                    this.currentCreateId += 1
+
+                    let commitForm = {
+                        "comment": form.comment,
+                        "division": form.division,
+                        "headId": this.newLine.from,
+                        "id": this.newLine.id,
+                        "name": form.name,
+                        "op": 'createItem',
+                        "relationId": this.newLine.id,
+                        "tableId": this.tableId,
+                        "tailId": form.to,
+                        "title": form.title,
+                        "user": this.user
+                    }
+                    this.commitOperationList.push(commitForm)
+                }
+
+
+
             },
             cancelNewLine() {
                 this.addLine = false
@@ -610,10 +732,32 @@
                     type: 'warning'
                 });
                 this.isEditExistedNode = true
+
             },
             commitEditExistedNode() {
+                let commitForm = {
+                    "comment": this.currentNode.comment,
+                    "division": this.currentNode.division,
+                    "headId": "",
+                    "id": this.currentNode.id,
+                    "name": this.currentNode.text,
+                    "op": 'updateItem',
+                    "relationId": "",
+                    "tableId": this.tableId,
+                    "tailId": "",
+                    "title": this.currentNode.title,
+                    "user": ""
+                }
+                this.commitOperationList.push(commitForm)
+
                 this.isShowNodeTipsPanel = false
                 console.log(this.isShowNodeTipsPanel)
+            },
+            exitEditExistedNode() {
+                this.currentNode.text = this.currentNodeOrigin.text
+                this.currentNode.data = JSON.parse(JSON.stringify(this.currentNodeOrigin.data))
+                this.currentNodeOrigin = {}
+                this.hideNodeTips()
             },
 
             editExistedRelation() {
@@ -623,6 +767,27 @@
                 });
             },
             commitEditExistedLine() {
+                let commitForm = {
+                    "comment": this.currentLine.relations[0].data.comment,
+                    "division": this.currentLine.relations[0].data.division,
+                    "headId": "",
+                    "id": this.currentLine.relations[0].data.id,
+                    "name": this.currentLine.relations[0].data.name,
+                    "op": 'updateItem',
+                    "relationId": "",
+                    "tableId": this.tableId,
+                    "tailId": "",
+                    "title": this.currentLine.relations[0].data.title,
+                    "user": ""
+                }
+                this.commitOperationList.push(commitForm)
+
+                this.hideLineTips()
+            },
+            exitEditExistedLine() {
+                this.currentLine.relations[0].text = this.currentLineOrigin.text
+                this.currentLine.relations[0].data = JSON.parse(JSON.stringify(this.currentLineOrigin.data))
+                this.currentLineOrigin = {}
                 this.hideLineTips()
             },
 
@@ -639,8 +804,7 @@
                 await commitDeleteFrontEnd(nodeObject)
             },*/
 
-            async commitDeleteNode(nodeObject) {
-                let isDeleted = false
+            commitDeleteNode(nodeObject) {
                 this.$confirm('此操作将永久删除该节点, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -653,23 +817,23 @@
 
                     //在前端进行删除
                     this.$refs.seeksRelationGraph.removeNodeById(nodeObject.id)
-                    isDeleted = true
-                    /*let res = await this.$fetch('KG/commitChange', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            "op": 'deleteItem',
-                            "id": nodeObject.id,
-                            "comment": "",
-                            "division": "",
-                            "headId": "",
-                            "name": "",
-                            "relationId": "",
-                            "tableId": "",
-                            "tailId": "",
-                            "title": "",
-                            "user": ""
-                        }),
-                    })*/
+
+                    let commitForm = {
+                        "comment": "",
+                        "division": "",
+                        "headId": "",
+                        "id": this.currentNode.id,
+                        "name": "",
+                        "op": 'deleteItem',
+                        "relationId": "",
+                        "tableId": "",
+                        "tailId": "",
+                        "title": "",
+                        "user": ""
+                    }
+                    this.commitOperationList.push(commitForm)
+
+
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -677,29 +841,6 @@
                     });
                 });
 
-                //在后端进行删除
-                console.log(isDeleted)
-                if (isDeleted == true) {
-                    let res = await this.$fetch('KG/commitChange', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            "op": 'deleteItem',
-                            "id": nodeObject.id,
-                            "comment": "",
-                            "division": "",
-                            "headId": "",
-                            "name": "",
-                            "relationId": "",
-                            "tableId": "",
-                            "tailId": "",
-                            "title": "",
-                            "user": ""
-                        }),
-                    })
-                    console.log("test")
-                }
-
-                this.isDeleteNode = false
                 this.hideNodeTips(nodeObject)
             },
 
@@ -720,14 +861,34 @@
                         type: 'success',
                         message: '删除成功!'
                     });
-                    lineObject.fromNode.id = 0
-                    lineObject.toNode.id = 0
+
+
+
+                    let commitForm = {
+                        "comment": "",
+                        "division": "",
+                        "headId": this.currentLine.fromNode.id,
+                        "id": "",
+                        "name": "",
+                        "op": 'deleteLink',
+                        "relationId": this.currentLine.relations[0].data.id,
+                        "tableId": this.tableId,
+                        "tailId": this.currentLine.toNode.id,
+                        "title": "",
+                        "user": ""
+                    }
+
+                    this.commitOperationList.push(commitForm)
+                    //console.log('确认删除')
+
                     lineObject.isHide = true
+
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
                     });
+                    //console.log('取消删除')
                 });
                 this.isDeleteLine = false
                 this.hideLineTips(lineObject)
@@ -749,6 +910,26 @@
             console.log(this.root)
 
             this.showSeeksGraph()
+
+            this.propertyList.push(this.displayLine[0])
+            for (var i = 0; i < this.displayLine.length; i ++)
+            {
+                let flag = true
+                let property = this.displayLine[i]
+                for (var j = 0; j < this.propertyList.length; j ++)
+                {
+                    let existed = this.propertyList[j]
+                    if (property.data.id == existed.data.id){
+                        flag = false
+                        break;
+                    }
+
+                }
+                if (flag == true) {
+                    this.propertyList.push(property)
+                }
+            }
+            console.log(this.user)
 
         }
 /*        methods:{
