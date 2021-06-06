@@ -385,6 +385,7 @@
     import SeeksRelationGraph from "relation-graph";
     import AddNodeModal from "./AddNodeModal";
     import AddLineModal from "./AddLineModal";
+    import {$ajax} from "../plugins/request";
 
     export default {
         /*name: 'Echarts',
@@ -539,11 +540,10 @@
                     })
                 }
 
-                let res = await this.$fetch('KG/confirmChange', {
-                    method: 'GET',
-                    body: JSON.stringify({
-                        "userName": this.user
-                    })
+
+                $ajax("KG/confirmChange","GET", {userName: this.user}
+                ).then(res=>{
+                    console.log("success confirm change")
                 })
 
                 this.commitOperationList = []
@@ -632,7 +632,7 @@
                     "tableId": this.tableId,
                     "tailId": "",
                     "title": "",
-                    "user": ""
+                    "user": this.user
                 }
                 this.commitOperationList.push(commitForm)
 
@@ -695,7 +695,7 @@
                         "tableId": this.tableId,
                         "tailId": form.to,
                         "title": "",
-                        "user": ""
+                        "user": this.user
                     }
                     this.commitOperationList.push(commitForm)
                 }
@@ -746,7 +746,7 @@
                     "tableId": this.tableId,
                     "tailId": "",
                     "title": this.currentNode.title,
-                    "user": ""
+                    "user": this.user
                 }
                 this.commitOperationList.push(commitForm)
 
@@ -778,7 +778,7 @@
                     "tableId": this.tableId,
                     "tailId": "",
                     "title": this.currentLine.relations[0].data.title,
-                    "user": ""
+                    "user": this.user
                 }
                 this.commitOperationList.push(commitForm)
 
@@ -826,10 +826,10 @@
                         "name": "",
                         "op": 'deleteItem',
                         "relationId": "",
-                        "tableId": "",
+                        "tableId": this.tableId,
                         "tailId": "",
                         "title": "",
-                        "user": ""
+                        "user": this.user
                     }
                     this.commitOperationList.push(commitForm)
 
@@ -875,7 +875,7 @@
                         "tableId": this.tableId,
                         "tailId": this.currentLine.toNode.id,
                         "title": "",
-                        "user": ""
+                        "user": this.user
                     }
 
                     this.commitOperationList.push(commitForm)
