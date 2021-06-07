@@ -36,11 +36,16 @@
             }
         },
         async created() {
-            $ajax("KG/getAllGraphInfo","GET"
-            ).then(res=>{
-                this.graphList=JSON.parse(res.data)
-                console.log(this.graphList)
-            })
+            if(this.$state.user != this.$route.params.user){
+                this.$router.push("/login")
+            }
+            else{
+                $ajax("KG/getAllGraphInfo","GET"
+                ).then(res=>{
+                    this.graphList=JSON.parse(res.data)
+                    console.log(this.graphList)
+                })
+            }
         }
     }
 </script>

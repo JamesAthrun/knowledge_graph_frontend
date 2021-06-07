@@ -19,6 +19,7 @@
     "relation-graph": "^1.1.0",
     "vue": "^2.5.11",
     "vue-axios": "^3.2.4",
+    "vue-cookies": "^1.7.4",
     "vue-router": "^3.0.1",
     "webpack-bundle-analyzer": "latest"
   },

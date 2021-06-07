@@ -41,7 +41,6 @@
 </template>
 
 <script>
-    import UserState from "../utils/userState";
     export default {
         data() {
             return {
@@ -49,9 +48,8 @@
             };
         },
         async mounted() {
-            if(UserState.check()!=null){
-                this.$state.user=UserState.check()[0]
-                this.$state.authority=UserState.check()[1]
+            if(this.$cookies.isKey("user_name")){
+                this.$state.user=this.$cookies.get("user_name")
             }
         },
         methods: {
@@ -63,9 +61,9 @@
             },
             async logout () {
                 console.log(this.$state.user)
-                this.$state.user=null
-                this.$state.authority=null
-                UserState.logout()
+                this.$state.user = null
+                this.$cookies.remove("user_key")
+                this.$cookies.remove("user_name")
                 this.backHome()
             },
         }
