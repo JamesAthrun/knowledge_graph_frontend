@@ -261,6 +261,9 @@
 
         <div ref="myPage" style="height:calc(100vh - 50px);">
             <el-row style="top:30px; margin-bottom:30px;">
+                <el-button type="primary" style="left: 0px; position: absolute;" round @click="showTree">显示树图</el-button>
+            </el-row>
+            <el-row style="top:30px; margin-bottom:30px;">
                 <el-button type="primary" icon="el-icon-edit-outline" style="right: 0px; position: absolute;" round v-if="isEditMode==false" @click="startEdit">开始编辑</el-button>
             </el-row>
             <el-dialog title = "添加节点" :visible="addNode" v-if="addNewNode" width="50%">
@@ -297,7 +300,8 @@
                 <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
                 <div style="line-height: 25px;padding-left: 10px;color: #888888;font-size: 12px;">节点：{{currentNode.text}}</div>
                 <div class="c-node-menu-item">编号:{{currentNode.id}}</div>
-                <div class="c-node-menu-item">全名:{{currentNode.data.name}}</div>
+                <div class="c-node-menu-item" v-if="currentNode.data.name != ''">全名:{{currentNode.data.name}}</div>
+                <div class="c-node-menu-item">title:{{currentNode.data.title}}</div>
             </div>
             <div v-if="isEditMode == true">
                 <div v-if="isDeleteNode" style="margin-left: 0px">
@@ -892,6 +896,10 @@
                 });
                 this.isDeleteLine = false
                 this.hideLineTips(lineObject)
+            },
+
+            showTree() {
+                this.$router.push(`/entity/tree/${this.routeParamId}`);
             }
 
         },

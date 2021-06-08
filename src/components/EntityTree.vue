@@ -1,10 +1,14 @@
 <template>
     <div style="height:calc(100vh - 100px);">
+        <el-row style="top:30px; bottom:30px;">
+            <el-button type="primary" style="left: 0px; position: absolute;" round @click="showGraph">显示图</el-button>
+        </el-row>
         <SeeksRelationGraph
                 ref="seeksRelationGraph"
                 :options="graphOptions"
                 :on-node-click="onNodeClick"
                 :on-line-click="onLineClick"
+                style="margin-top: 100px; height: 70%; width: 100%; float: right;"
         />
     </div>
 </template>
@@ -16,10 +20,13 @@
         components: {SeeksRelationGraph},
         data() {
             return {
+                routeParamId: '',
+                displayData: [],
+                displayLine: [],
+
                 currentCase: '横向树状图谱',
                 isShowCodePanel: false,
                 graphOptions: {
-                    'backgrounImage': 'http://ai-mark.cn/images/ai-mark-desc.png',
                     'backgrounImageNoRepeat': true,
                     'layouts': [
                         {
@@ -55,7 +62,7 @@
         methods:{
             showSeeksGraph(query) {
                 var __graph_json_data = {
-                    rootId: this.root,
+                    rootId: '19822994',
                     nodes: this.displayData,
                     links: this.displayLink,
                 }
@@ -70,6 +77,11 @@
             onLineClick(lineObject, $event) {
                 console.log('onLineClick:', lineObject)
             },
+
+            showGraph() {
+                console.log('test')
+                this.$router.push(`/entity/${this.routeParamId}`);
+            }
         },
         async created() {
             this.routeParamId = this.$route.params.id
