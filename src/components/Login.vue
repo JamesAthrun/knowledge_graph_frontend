@@ -63,7 +63,6 @@
 
 <script>
     import {$ajax} from "../plugins/request";
-    import UserState from "../utils/userState";
 
     export default {
         name: "Login",
@@ -116,15 +115,13 @@
             },
 
             async login () {
-                console.log(encryptByDES(JSON.stringify({username: this.username, password: this.password}), this.$state.key))
-                console.log(this.$state.key)
                 $ajax("login","POST",encryptByDES(JSON.stringify({
                     name: this.username,
                     pwd: this.password,
                 }),this.$state.key)).then((response)=>{
 
                     console.log(response)
-                    if(response.message=="pwd not match" || response.message=="unknownException"){
+                    if(response.code != 1){
                         this.$message({
                             type: 'error',
                             message: '用户名或密码错误！'
@@ -132,9 +129,8 @@
                     }
                     else{
                         this.$state.user = this.username
-                        this.$state.authority = JSON.parse(response.data).authority
-                        UserState.login([this.$state.user, this.$state.authority])
-                        console.log(UserState.check())
+                        this.$cookies.set("user_key",this.$state.key)
+                        this.$cookies.set("user_name",this.$state.user)
                         this.$router.push(`/${this.username}`)
                     }
                 })

@@ -41,29 +41,6 @@
                 </el-col>
             </el-row>
         </div>
-        <!--<h1>Welcome to our knowledge graph</h1>
-        <SmartForm
-                class="form"
-                title="Please enter the entity">
-            <FormInput
-                    name="test"
-                    v-model="message"
-                    placeholder="" />
-            <template slot="actions">
-                <button
-                        type="button"
-                        class="secondary"
-                        @click="search">
-                    Search
-                </button>
-                <button
-                        type="button"
-                        class="secondary"
-                        @click="clear">
-                    Clear
-                </button>
-            </template>
-        </SmartForm>-->
 
 
         <div v-if="isSearchList">

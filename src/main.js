@@ -10,16 +10,18 @@ import 'element-ui/lib/theme-chalk/index.css'//element-ui的css
 import './global-components'
 import state from "./state"
 import VueState from "./plugins/state"
+import VueCookies from 'vue-cookies'
 import axios from "axios"
 import VueAxios from "vue-axios"
 
 Vue.prototype.$echarts = echarts
 Vue.use(ElementUI)
 Vue.use(VueState, state)
+Vue.use(VueCookies)
 
 Vue.use(VueFetch, {
     //baseUrl: 'http://192.168.3.15:8082/'
-    baseUrl: 'http://localhost:8082/'
+    baseUrl: 'http://localhost:8081/'
 })
 
 new Vue({

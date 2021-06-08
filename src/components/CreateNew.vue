@@ -2,25 +2,29 @@
 
     <main class="create">
         <h1>Create a new knowledge graph</h1>
-        <el-upload
-            class="upload-demo"
-            action="http://localhost:8081/KG/uploadFile"
-            drag
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            :limit="1"
-            :on-exceed="handleExceed"
-            :on-success="onSuccess"
-            :file-list="fileList">
-            <i class="el-icon-upload"/>
-            <div class="el-upload__text">将文件拖到此处</div>
-            <div class="el-upload__tip" slot="tip">只能上传json文件，且不超过5MB</div>
-        </el-upload>
-        <el-button type="primary" @click="save">确定</el-button>
-        <div class="Echarts">
-            <div id="main" style="width: 800px;height:800px;"></div>
+        <div class="upload">
+            <el-upload
+                    class="upload-demo"
+                    action="http://localhost:8081/KG/uploadFile"
+                    drag
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :before-remove="beforeRemove"
+                    :limit="1"
+                    :on-exceed="handleExceed"
+                    :on-success="onSuccess"
+                    :file-list="fileList">
+                <i class="el-icon-upload"/>
+                <div class="el-upload__text">将文件拖到此处</div>
+                <div class="el-upload__tip" slot="tip">只能上传json文件，且不超过5MB</div>
+            </el-upload>
+            <el-button type="primary" @click="save">确定</el-button>
+            <div class="Echarts">
+                <div id="main" style="width: 800px;height:800px;"></div>
+            </div>
         </div>
+
+
     </main>
 </template>
 
@@ -76,7 +80,9 @@
 </script>
 
 <style>
-    .upload-demo{
+    .upload{
+        position: relative;
+        display: flex;
         justify-content: center;
         align-items: center;
     }
