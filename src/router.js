@@ -11,6 +11,7 @@ import KGDetail from "./components/KGDetail";
 import MyKGList from "./components/MyKGList";
 import Question from "./components/Question";
 import EntityTree from "./components/EntityTree";
+import SearchBox from "./components/SearchBox";
 
 Vue.use(VueRouter)
 
@@ -20,7 +21,7 @@ const routes = [
     {path: '/entity/:id', name:'entity', component:Entity},
     {path: '/entity/tree/:id', name:'entityTree', component:EntityTree},
     {path: '/KGDetail/:id', name:'KGDetail', component:KGDetail},
-    {path: '/search', name:'innerSearch', component:Home},
+    {path: '/search', name:'innerSearch', component:SearchBox},
     {path: '/question', name: 'innerQuestion', component: Question},
     {path: '/createNew', name:'createNew', component:CreateNew},
     {path: '/login', name: 'login', component: Login},

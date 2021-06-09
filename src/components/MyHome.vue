@@ -1,11 +1,18 @@
 <template>
     <main class="myHome">
-        <h1>Hi,{{this.$state.user}}</h1>
+        <el-col>
+            <VerticalNav/>
+        </el-col>
+        <el-col>
+            <h1>Hi,{{this.$state.user}}</h1>
+        </el-col>
+
     </main>
 </template>
 
 <script>
     import {$ajax} from "../plugins/request";
+    import VerticalNav from "./VerticalNav";
     export default {
         data(){
             return{
@@ -29,6 +36,9 @@
                     console.log(this.graphList)
                 })
             }
+        },
+        components:{
+            VerticalNav
         }
     }
 </script>

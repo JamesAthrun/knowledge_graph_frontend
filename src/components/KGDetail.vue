@@ -25,7 +25,6 @@
 </template>
 
 <script>
-    import NavMenu from "./NavMenu";
     import {$ajax} from "../plugins/request";
     export default {
         data(){

@@ -24,15 +24,18 @@
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/check" disabled>问答</el-menu-item>
             <el-menu-item index="/createNew">新建</el-menu-item>
-            <el-submenu index="/myHome">
+            <el-submenu :index="this.$state.user">
                 <template slot="title">我的主页</template>
                 <div v-if="this.$state.user==null">
                     <el-menu-item index="/login">登录</el-menu-item>
                 </div>
                 <div v-else>
-                    <el-menu-item :index="this.$state.user">{{this.$state.user}}</el-menu-item>
-                    <el-menu-item :index="this.$state.user+'/myKG'">知识图谱</el-menu-item>
-                    <el-menu-item index="/myHome" @click="logout">注销</el-menu-item>
+                    <el-menu-item index="1" @click="userPage">{{this.$state.user}}</el-menu-item>
+                    <el-menu-item index="2" @click="graphPage">知识图谱</el-menu-item>
+                    <el-menu-item index="3" @click="logout">注销</el-menu-item>
+<!--                    <el-menu-item route="this.$state.user">{{this.$state.user}}</el-menu-item>-->
+<!--                    <el-menu-item route={path:'/:user/myKG',name:'myHome'}>知识图谱</el-menu-item>-->
+<!--                    <el-menu-item route="this.$state.user" @click="logout">注销</el-menu-item>-->
                 </div>
 
             </el-submenu>
@@ -41,6 +44,8 @@
 </template>
 
 <script>
+    import router from "../router";
+
     export default {
         data() {
             return {
@@ -67,8 +72,16 @@
                 this.$cookies.remove("table_id")
                 this.backHome()
             },
-        }
+            userPage(){
+                this.$router.push({path:`${this.$state.user}`})
+            },
+            graphPage(){
+                this.$router.push({path:`${this.$state.user}/myKG`})
+            }
+        },
     }
+
+
 </script>
 
 <style lang="stylus" scoped>
