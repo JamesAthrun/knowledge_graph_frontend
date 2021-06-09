@@ -5,11 +5,20 @@
                 <el-form-item label="标题" style="width:422px;height:51px;">
                     <el-input v-model="form.text" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="id" style="width:422px;height:51px;">
-                    <el-input v-model="form.id" autocomplete="off"></el-input>
-                </el-form-item>
                 <el-form-item label="具体内容" style="width:422px;height:51px;">
-                    <el-input v-model="form.content" autocomplete="off"></el-input>
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="title" style="width:422px;height:51px;">
+                    <el-input v-model="form.title" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="comment" style="width:422px;height:51px;">
+                    <el-input v-model="form.comment" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="division" style="width:422px;height:51px;">
+                    <el-select v-model="form.division" value-key="division">
+                        <el-option v-for="item in divisionList" :key="item.text" :label="item.text" :value="item.text">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('form')">添加</el-button>
@@ -28,10 +37,19 @@
         },
         data() {
             return {
+                divisionList: [{
+                    text: "Class"
+                },{
+                    text: "String"
+                },{
+                    text: "Resource"
+                }],
                 form: {
                     text: '',
-                    id: '',
-                    content: '',
+                    name: '',
+                    title: '',
+                    comment: '',
+                    division: '',
                 },
                 rules: {
                 }

@@ -261,7 +261,7 @@
 
         <div ref="myPage" style="height:calc(100vh - 50px);">
             <el-row style="top:30px; margin-bottom:30px;">
-                <el-button type="primary" style="left: 0px; position: absolute;" round @click="showTree">显示树图</el-button>
+                <el-button type="primary" style="left: 0px; position: absolute;" round v-if="isEditMode==false" @click="showTree">显示树图</el-button>
             </el-row>
             <el-row style="top:30px; margin-bottom:30px;">
                 <el-button type="primary" icon="el-icon-edit-outline" style="right: 0px; position: absolute;" round v-if="isEditMode==false" @click="startEdit">开始编辑</el-button>
@@ -709,7 +709,7 @@
 
                     let commitForm = {
                         "comment": form.comment,
-                        "division": form.division,
+                        "division": 'Property',
                         "headId": this.newLine.from,
                         "id": this.newLine.id,
                         "name": form.name,
