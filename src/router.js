@@ -18,7 +18,7 @@ const routes = [
     {path: '/', name:'home', component: Home},
     {path: '/check', name: 'check', component: CheckForm},
     {path: '/entity/:id', name:'entity', component:Entity},
-    {path: '/entityTree/:id', name:'entityTree', component:EntityTree},
+    {path: '/entity/tree/:id', name:'entityTree', component:EntityTree},
     {path: '/KGDetail/:id', name:'KGDetail', component:KGDetail},
     {path: '/search', name:'innerSearch', component:Home},
     {path: '/question', name: 'innerQuestion', component: Question},
