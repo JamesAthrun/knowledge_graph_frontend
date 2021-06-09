@@ -129,8 +129,9 @@
                     }
                     else{
                         this.$state.user = this.username
-                        this.$cookies.set("user_key",this.$state.key)
+                        this.$cookies.set("user_key",encryptByDES(this.$state.key,this.$state.key))
                         this.$cookies.set("user_name",this.$state.user)
+                        console.log(this.$cookies.get("user_key"))
                         this.$router.push(`/${this.username}`)
                     }
                 })

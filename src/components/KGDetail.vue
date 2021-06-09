@@ -7,8 +7,12 @@
                     <h2>{{this.graphInfo.description}}}</h2>
                 </div>
                 <div class="functionArea">
-                    <i class="el-icon-search" />
-                    <i class="el-icon-question" />
+                    <button style="background: white;border: none" v-on:click="goToSearch">
+                        <i class="el-icon-search" style="color: deepskyblue;height: 28px;width: 28px"/>
+                    </button>
+                    <button style="background: white;border: none" v-on:click="goToQuestion">
+                        <i class="el-icon-question" style="color: deepskyblue; height: 50px; width: 50px"/>
+                    </button>
                 </div>
             </el-col>
             <el-col class="right">
@@ -26,30 +30,55 @@
     export default {
         data(){
             return{
+                isAuthorized: true,
                 tableId: null,
                 tableName: "",
                 graphInfo: {},
                 graphHistory: {},
             }
         },
+
+        methods:{
+            goToSearch(){
+                this.$router.push({path:'/search'})
+            },
+            goToQuestion(){
+                this.$router.push({path:'/question'})
+            }
+        },
+
         async created(){
-            this.tableId = this.$route.params.id
+            this.tableId = this.$cookies.get("table_id")
             $ajax("KG/getGraphInfo","GET",{tableId: this.tableId}
             ).then(res=>{
-                this.graphInfo=JSON.parse(res.data)
-                this.tableName=this.graphInfo.name
-                console.log(this.tableName)
+                if(res.code!=1){
+                    this.isAuthorized = false
+                }
+                else{
+                    this.graphInfo=JSON.parse(res.data)
+                    this.tableName=this.graphInfo.name
+                    console.log(this.tableName)
+                }
             })
             $ajax("KG/getGraphHistory","GET",{tableId: this.tableId}
             ).then(res=>{
-                this.graphHistory=JSON.parse(res.data)
-                console.log(this.graphHistory)
+                if(res.code!=1){
+                    this.isAuthorized = false
+                }
+                else{
+                    this.graphHistory=JSON.parse(res.data)
+                    console.log(this.graphHistory)
+                }
             })
-            console.log(this.tableId)
+            if(!this.isAuthorized){
+                this.$cookies.remove("table_id")
+                this.$router.go(-1)
+                this.$message({
+                    type: 'error',
+                    message: '您没有权限访问该知识图谱！'
+                });
+            }
         },
-        components: {
-            NavMenu
-        }
     }
 </script>
 

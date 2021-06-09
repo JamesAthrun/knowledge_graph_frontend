@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import MyHome from "./components/MyHome";
 import KGDetail from "./components/KGDetail";
 import MyKGList from "./components/MyKGList";
+import Question from "./components/Question";
 import EntityTree from "./components/EntityTree";
 
 Vue.use(VueRouter)
@@ -19,6 +20,8 @@ const routes = [
     {path: '/entity/:id', name:'entity', component:Entity},
     {path: '/entityTree/:id', name:'entityTree', component:EntityTree},
     {path: '/KGDetail/:id', name:'KGDetail', component:KGDetail},
+    {path: '/search', name:'innerSearch', component:Home},
+    {path: '/question', name: 'innerQuestion', component: Question},
     {path: '/createNew', name:'createNew', component:CreateNew},
     {path: '/login', name: 'login', component: Login},
     {path: '/:user', name: 'myHome', component: MyHome},

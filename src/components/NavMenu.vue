@@ -20,7 +20,7 @@
             <img class="img" src="assets/logo.svg"/>
         </button>
         <div class="spacer"></div>
-        <el-menu :default-active="this.$route.path" class="el-menu-demo" mode="horizontal" router @select="handleSelect">
+        <el-menu default-active="/" class="el-menu-demo" mode="horizontal" router @select="handleSelect">
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/check" disabled>问答</el-menu-item>
             <el-menu-item index="/createNew">新建</el-menu-item>
@@ -64,6 +64,7 @@
                 this.$state.user = null
                 this.$cookies.remove("user_key")
                 this.$cookies.remove("user_name")
+                this.$cookies.remove("table_id")
                 this.backHome()
             },
         }

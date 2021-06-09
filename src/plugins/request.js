@@ -36,6 +36,9 @@ export async function $ajax(biasUrl,type,data) {
         url: `${baseUrl}${biasUrl}`,
         type: type,
         headers: {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
-        data: data
+        data: data,
+        xhrFields: {
+            withCredentials: true
+        }
     });
 }

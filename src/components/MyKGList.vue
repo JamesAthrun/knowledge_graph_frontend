@@ -30,6 +30,7 @@
         },
         methods:{
             getDetail(row){
+                this.$cookies.set("table_id", row.tableId)
                 this.$router.push(`/KGDetail/${row.tableId}`)
                 console.log(row.tableId)
             }
