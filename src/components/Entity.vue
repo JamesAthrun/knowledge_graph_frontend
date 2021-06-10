@@ -538,10 +538,12 @@
 
                 for(var i = 0; i < this.commitOperationList.length; i ++) {
                     let currentCommitOperation = this.commitOperationList[i]
-                    let res = await this.$fetch('KG/commitChange', {
+                    /*let res = await this.$fetch('KG/commitChange', {
                         method: 'POST',
                         body: JSON.stringify(currentCommitOperation),
-                    })
+                    })*/
+
+                    $ajax("KG/commitChange", 'POST', JSON.stringify(currentCommitOperation))
                 }
 
 
@@ -906,11 +908,16 @@
 
         async created() {
             this.routeParamId = this.$route.params.id
-            var url = 'KG/getGraphData?id=' + this.routeParamId + "&ver=0"
-            var response = await this.$fetch(url)
-            console.log(response)
-            this.displayData = JSON.parse(response.data).itemData
-            this.displayLine = JSON.parse(response.data).link
+            /*var url = 'KG/getGraphData?id=' + this.routeParamId + "&ver=0"
+            var response = await this.$fetch(url)*/
+            $ajax("KG/getGraphData","GET", {id: this.routeParamId, ver: '0'}
+            ).then(response => {
+                this.displayData = JSON.parse(response.data).itemData
+                this.displayLine = JSON.parse(response.data).link
+            })
+            //console.log(response)
+            /*this.displayData = JSON.parse(response.data).itemData
+            this.displayLine = JSON.parse(response.data).link*/
             this.root = this.displayData[0].id
 
             console.log(this.displayData)

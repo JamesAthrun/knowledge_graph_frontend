@@ -15,6 +15,7 @@
 
 <script>
     import SeeksRelationGraph from 'relation-graph'
+    import {$ajax} from "../plugins/request";
     export default {
         name: 'Demo',
         components: {SeeksRelationGraph},
@@ -85,11 +86,16 @@
         },
         async created() {
             this.routeParamId = this.$route.params.id
-            var url = 'KG/getTreeData?id=' + this.routeParamId + '&ver=0'
-            var response = await this.$fetch(url)
-            console.log(response)
+            /*var url = 'KG/getTreeData?id=' + this.routeParamId + '&ver=0'
+            var response = await this.$fetch(url)*/
+            $ajax("KG/getTreeData","GET", {id: this.routeParamId, ver: '0'}
+            ).then(response => {
+                this.displayData = JSON.parse(response.data).itemData
+                this.displayLink = JSON.parse(response.data).link
+            })
+            /*console.log(response)
             this.displayData = JSON.parse(response.data).itemData
-            this.displayLink = JSON.parse(response.data).link
+            this.displayLink = JSON.parse(response.data).link*/
             this.root = this.displayData[0].id
 
             console.log(this.displayData)
