@@ -1,6 +1,6 @@
 <template>
     <main class="myHome">
-        <el-col>
+        <el-col  class="vermenu">
             <VerticalNav/>
         </el-col>
         <el-col>
@@ -26,16 +26,11 @@
             }
         },
         async created() {
-            if(this.$cookies.get("user_name") != this.$route.params.user){
-                this.$router.push("/login")
-            }
-            else{
-                $ajax("KG/getAllGraphInfo","GET"
-                ).then(res=>{
-                    this.graphList=JSON.parse(res.data)
-                    console.log(this.graphList)
-                })
-            }
+            // $ajax("KG/getAllGraphInfo","GET"
+            // ).then(res=>{
+            //     this.graphList=JSON.parse(res.data)
+            //     console.log(this.graphList)
+            // })
         },
         components:{
             VerticalNav
@@ -51,4 +46,7 @@
         width: 80%;
     }
 
+    .vermenu{
+        width: 15%;
+    }
 </style>

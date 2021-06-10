@@ -12,6 +12,7 @@ import MyKGList from "./components/MyKGList";
 import Question from "./components/Question";
 import EntityTree from "./components/EntityTree";
 import SearchBox from "./components/SearchBox";
+import MyGroup from "./components/MyGroup";
 
 Vue.use(VueRouter)
 
@@ -25,8 +26,9 @@ const routes = [
     {path: '/question', name: 'innerQuestion', component: Question},
     {path: '/createNew', name:'createNew', component:CreateNew},
     {path: '/login', name: 'login', component: Login},
-    {path: '/:user', name: 'myHome', component: MyHome},
-    {path: '/:user/myKG', name: 'myHome', component: MyKGList},
+    {path: '/user/home', name: 'myHome', component: MyHome},
+    {path: '/user/myKG', name: 'myKG', component: MyKGList},
+    {path: '/user/myGroup', name: 'myGroup', component: MyGroup},
 ]
 
 const router = new VueRouter({
