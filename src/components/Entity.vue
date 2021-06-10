@@ -907,17 +907,19 @@
         },
 
         async created() {
+            console.log(document.cookie)
             this.routeParamId = this.$route.params.id
-            /*var url = 'KG/getGraphData?id=' + this.routeParamId + "&ver=0"
-            var response = await this.$fetch(url)*/
+/*<<<<<<< HEAD
+            /!*var url = 'KG/getGraphData?id=' + this.routeParamId + "&ver=0"
+            var response = await this.$fetch(url)*!/
             $ajax("KG/getGraphData","GET", {id: this.routeParamId, ver: '0'}
             ).then(response => {
                 this.displayData = JSON.parse(response.data).itemData
                 this.displayLine = JSON.parse(response.data).link
             })
             //console.log(response)
-            /*this.displayData = JSON.parse(response.data).itemData
-            this.displayLine = JSON.parse(response.data).link*/
+            /!*this.displayData = JSON.parse(response.data).itemData
+            this.displayLine = JSON.parse(response.data).link*!/
             this.root = this.displayData[0].id
 
             console.log(this.displayData)
@@ -925,26 +927,42 @@
             console.log(this.root)
 
             this.showSeeksGraph()
+=======
+            var url = 'KG/getGraphData?id=' + this.routeParamId + "&ver=0"
+            // var response = await this.$fetch(url)*/
+            $ajax('KG/getGraphData', "GET", {id: this.routeParamId, ver: "0"}).then(
+                (response)=>{
+                    console.log(response)
+                    this.displayData = JSON.parse(response.data).itemData
+                    this.displayLine = JSON.parse(response.data).link
+                    this.root = this.displayData[0].id
 
-            this.propertyList.push(this.displayLine[0])
-            for (var i = 0; i < this.displayLine.length; i ++)
-            {
-                let flag = true
-                let property = this.displayLine[i]
-                for (var j = 0; j < this.propertyList.length; j ++)
-                {
-                    let existed = this.propertyList[j]
-                    if (property.data.id == existed.data.id){
-                        flag = false
-                        break;
+                    console.log(this.displayData)
+                    console.log(this.displayLine)
+                    console.log(this.root)
+
+                    this.showSeeksGraph()
+
+                    this.propertyList.push(this.displayLine[0])
+                    for (var i = 0; i < this.displayLine.length; i ++)
+                    {
+                        let flag = true
+                        let property = this.displayLine[i]
+                        for (var j = 0; j < this.propertyList.length; j ++)
+                        {
+                            let existed = this.propertyList[j]
+                            if (property.data.id == existed.data.id){
+                                flag = false
+                                break;
+                            }
+                        }
+                        if (flag == true) {
+                            this.propertyList.push(property)
+                        }
                     }
-
+                    console.log(this.user)
                 }
-                if (flag == true) {
-                    this.propertyList.push(property)
-                }
-            }
-            console.log(this.user)
+            )
 
         }
 /*        methods:{

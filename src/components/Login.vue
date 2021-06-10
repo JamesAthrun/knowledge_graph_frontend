@@ -95,6 +95,7 @@
             },
         },
         async mounted(){
+            console.log('login here')
             let sth = Math.random().toString()
             let k = cryptico.generateRSAKey(sth,1024)
             let modulus = String(k.n)
@@ -106,7 +107,7 @@
               let des_key_s = JSON.parse(response.data).key
               let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
               this.$state.key = des_key
-              //console.log(this.$state.key)
+              console.log(this.$state.key)
             })
         },
         methods: {
@@ -129,9 +130,10 @@
                     }
                     else{
                         this.$state.user = this.username
-                        this.$cookies.set("user_key",this.$state.key)
+                        this.$cookies.set("user_key",encryptByDES(this.$state.key,this.$state.key))
                         this.$cookies.set("user_name",this.$state.user)
-                        this.$router.push(`/${this.username}`)
+                        console.log(this.$cookies.get("user_key"))
+                        this.$router.push('/user/home')
                     }
                 })
 

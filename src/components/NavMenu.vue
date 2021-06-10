@@ -20,19 +20,25 @@
             <img class="img" src="assets/logo.svg"/>
         </button>
         <div class="spacer"></div>
-        <el-menu :default-active="this.$route.path" class="el-menu-demo" mode="horizontal" router @select="handleSelect">
+        <el-menu default-active="/" class="el-menu-demo" mode="horizontal" router @select="handleSelect">
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/check" disabled>问答</el-menu-item>
             <el-menu-item index="/createNew">新建</el-menu-item>
-            <el-submenu index="/myHome">
+            <el-submenu index="/user">
                 <template slot="title">我的主页</template>
                 <div v-if="this.$state.user==null">
                     <el-menu-item index="/login">登录</el-menu-item>
                 </div>
                 <div v-else>
-                    <el-menu-item :index="this.$state.user">{{this.$state.user}}</el-menu-item>
-                    <el-menu-item :index="this.$state.user+'/myKG'">知识图谱</el-menu-item>
-                    <el-menu-item index="/myHome" @click="logout">注销</el-menu-item>
+<!--                    <el-menu-item index="1" @click="userPage">{{this.$state.user}}</el-menu-item>-->
+<!--                    <el-menu-item index="2" @click="graphPage">知识图谱</el-menu-item>-->
+<!--                    <el-menu-item index="3" @click="logout">注销</el-menu-item>-->
+                    <el-menu-item index="/user/home">{{this.$state.user}}</el-menu-item>
+                    <el-menu-item index="/user/myKG">知识图谱</el-menu-item>
+                    <el-menu-item index="/user/myGroup">用户组</el-menu-item>
+<!--                    <el-menu-item route={path:'/:user/myKG',name:'myHome'}>知识图谱</el-menu-item>-->
+                    <el-menu-item index="/user" @click="logout">注销</el-menu-item>
+
                 </div>
 
             </el-submenu>
@@ -41,13 +47,15 @@
 </template>
 
 <script>
+    import router from "../router";
+
     export default {
         data() {
             return {
                 activeIndex: '1',
             };
         },
-        async mounted() {
+        async created() {
             if(this.$cookies.isKey("user_name")){
                 this.$state.user=this.$cookies.get("user_name")
             }
@@ -64,10 +72,13 @@
                 this.$state.user = null
                 this.$cookies.remove("user_key")
                 this.$cookies.remove("user_name")
+                this.$cookies.remove("table_id")
                 this.backHome()
             },
-        }
+        },
     }
+
+
 </script>
 
 <style lang="stylus" scoped>
