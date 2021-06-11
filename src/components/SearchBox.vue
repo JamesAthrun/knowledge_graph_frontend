@@ -43,14 +43,31 @@
 
 
         <div v-if="isSearchList">
-            <section class="list">
-                <article v-for="searchResult of searchResultList" @click="getEntity(searchResult.id)">
-                    <h2 v-html="searchResult.id"></h2>
-                    <p v-html="searchResult.data.content"></p>
-                    <p v-html="searchResult.text"></p>
+            <section class="list" style="margin-top: 20px; margin-left:30%">
+                <article v-for="searchResult of currentDisplayList" @click="getEntity(searchResult.id)">
+                    <h2 v-html="searchResult.data.name" v-if="searchResult.data.name != ''"></h2>
+                    <h2 v-else v-html="searchResult.data.title"></h2>
+                    <p>id: {{searchResult.data.id}}</p>
+                    <p>title: {{searchResult.data.title}}</p>
+                    <p>division: {{searchResult.data.division}}</p>
                 </article>
             </section>
+
+            <div class="block" style="margin-top: 50px; margin-left:40%">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="currentPage"
+                        :page-size="pageSize"
+                        layout="total, prev, pager, next"
+                        :total="total">
+                </el-pagination>
+            </div>
+
         </div>
+
+
+
     </main>
 </template>
 
@@ -68,7 +85,14 @@
                 historySearchList: [], //历史搜索数据
                 searchResultList: ["暂无数据"], //搜索返回数据,
                 history: false,
-                types: ["", "success", "info", "warning", "danger"] //搜索历史tag式样
+                types: ["", "success", "info", "warning", "danger"], //搜索历史tag式样
+
+                currentPage: 1,
+                pageSize: 10,
+                total: 20,
+                displayList: [],
+                currentDisplayList: []
+
             };
         },
         methods: {
@@ -104,10 +128,38 @@
                 console.log(document.cookie)
                 $ajax("KG/search","GET", {keywords: this.search, ver: "0"}
                 ).then(res=>{
+                    //重置
+                    this.currentDisplayList = []
+                    this.displayList = []
+
                     console.log("ok")
                     this.searchResultList = JSON.parse(res.data).data;
+                    console.log(this.searchResultList)
                     this.isSearched = true;
+
+                    this.total = this.searchResultList.length
+
+                    let i = 0
+                    while (i < this.total){
+                        let currentList = []
+                        for (var j = 0; j < 10; j ++) {
+                            //console.log(this.searchResultList[i])
+                            if (i == this.searchResultList.length) {
+                                break
+                            }
+                            currentList.push(this.searchResultList[i])
+                            i += 1
+                        }
+                        this.displayList.push(currentList)
+                    }
+                    //console.log(this.displayList)
+
+                    this.currentDisplayList = this.displayList[0]
+                    //console.log(this.currentDisplayList)
+
                 })
+
+
 
             },
             closeHandler(search) {
@@ -125,6 +177,15 @@
                 this.isSearched = false;
                 this.$router.push(`/entity/${id}`);
             },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.currentDisplayList = this.displayList[val - 1]
+                console.log(`当前页: ${val}`);
+            }
         },
         computed: {
             isHistorySearch() {

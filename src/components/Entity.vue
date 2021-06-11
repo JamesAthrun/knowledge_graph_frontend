@@ -937,6 +937,11 @@
                 (response)=>{
                     console.log(response)
                     this.displayData = JSON.parse(response.data).itemData
+
+                    for (var i = 0; i < this.displayData.length; i ++) {
+                        this.displayData[i].nodeshape = parseInt(this.displayData[i].nodeshape)
+                    }
+
                     this.displayLine = JSON.parse(response.data).link
                     this.root = this.displayData[0].id
 
