@@ -89,21 +89,19 @@
             /*var url = 'KG/getTreeData?id=' + this.routeParamId + '&ver=0'
             var response = await this.$fetch(url)*/
             $ajax("KG/getTreeData","GET", {id: this.routeParamId, ver: '0'}
-            ).then(response => {
+            ).then((response) => {
+                console.log(response)
                 this.displayData = JSON.parse(response.data).itemData
                 this.displayLink = JSON.parse(response.data).link
+                // this.root = this.displayData[0].id
+                this.root = 19822994
+                // console.log(this.root)
+                console.log(this.displayData)
+                console.log(this.displayLink)
+                console.log(this.root)
+
+                this.showSeeksGraph()
             })
-            /*console.log(response)
-            this.displayData = JSON.parse(response.data).itemData
-            this.displayLink = JSON.parse(response.data).link*/
-            this.root = this.displayData[0].id
-
-            console.log(this.displayData)
-            console.log(this.displayLink)
-            console.log(this.root)
-
-            this.showSeeksGraph()
-
         }
     }
 </script>
