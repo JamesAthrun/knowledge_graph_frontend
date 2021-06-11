@@ -259,6 +259,8 @@
 
         </div>-->
 
+
+      <div id="main-area">
         <div ref="myPage" style="height:calc(100vh - 50px);">
             <el-row style="top:30px; margin-bottom:30px;">
                 <el-button type="primary" style="left: 0px; position: absolute;" round v-if="isEditMode==false" @click="showTree">显示树图</el-button>
@@ -295,6 +297,7 @@
                     style="margin-top: 100px; height: 70%; width: 100%; float: right;">
             </SeeksRelationGraph>
         </div>
+      </div>
         <div v-if="isShowNodeTipsPanel == true" :style="{left: nodeMenuPanelPosition.x + 'px', top: nodeMenuPanelPosition.y + 'px' }" style="z-index: 999;padding:10px;background-color: #ffffff;border:#eeeeee solid 1px;box-shadow: 0px 0px 8px #cccccc;position: absolute;">
             <div v-if="isEditMode == false">
                 <el-button icon="el-icon-close" round mini style="top:0px; right:0px; position: absolute; border:none;" @click="hideNodeTips"></el-button>
@@ -485,7 +488,7 @@
                     allowSwitchLineShape: true,
                     allowSwitchJunctionPoint: true,
                     defaultJunctionPoint: 'border',
-                    disableZoom: true,
+                    // disableZoom: true,
                     // 这里可以参考"Graph 图谱"中的参数进行设置
                 },
 
@@ -1459,5 +1462,11 @@
     }
     .c-node-menu-item:hover{
         background-color: rgba(66,187,66,0.2);
+    }
+    #main-area{
+      position: fixed;
+      height: 90%;
+      width: 100%;
+      background-color: rgba(18,182,214,0.05);
     }
 </style>
