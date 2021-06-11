@@ -72,6 +72,7 @@
 
 <script>
     import {$ajax} from "../plugins/request";
+    import {$fadeIn, $fadeOut} from "../plugins/anime";
 
     export default {
         name: "Login",
@@ -104,6 +105,8 @@
             },
         },
         async mounted(){
+            $fadeIn(100,0.5,document.getElementById("pic-box"))
+
             console.log('login here')
             let sth = Math.random().toString()
             let k = cryptico.generateRSAKey(sth,1024)
@@ -118,7 +121,10 @@
               this.$state.key = des_key
             })
         },
-        methods: {
+      destroyed() {
+        $fadeOut(100,0.1,document.getElementById("pic-box"))
+      },
+      methods: {
             async operation() {
                 await this[this.mode]()
             },
@@ -199,7 +205,7 @@
 
     #pic-box{
       width: 100%;
-      background-image: url("https://gitee.com/lconq/my-img-oss/raw/master/img/bg.png");//背景图得换
+      background-image: url("https://gitee.com/lconq/my-img-oss/raw/master/img/bg-login.png");//背景图得换
       background-repeat: no-repeat;
       background-size: cover;
       height: 100%;

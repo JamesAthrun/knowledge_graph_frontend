@@ -1,26 +1,26 @@
 <template>
 
     <div>
-      <div id="pic-box">
-        <div id="main-area">
-          <div class="curtain">
-            <div class="center-container">
-              <label id="headline">NKG知识图谱</label>
-            </div>
-          </div>
-
-        </div>
-        <div id="bottom-area">
-          <div class="curtain" style="display: flex;flex-direction: row;">
-            <div id="intro-item" v-for="introItem of this.introItemList">
+        <div id="pic-box">
+          <div id="main-area">
+            <div class="curtain">
               <div class="center-container">
-                <label id="intro-item-head">{{introItem.itemHead}}</label>
-                <label id="intro-item-body">{{introItem.itemBody}}</label>
+                <label id="headline">NKG知识图谱</label>
               </div>
             </div>
-            </div>
+
+          </div>
+          <div id="bottom-area">
+            <div class="curtain" style="display: flex;flex-direction: row;">
+              <div id="intro-item" v-for="introItem of this.introItemList">
+                <div class="center-container">
+                  <label id="intro-item-head">{{introItem.itemHead}}</label>
+                  <label id="intro-item-body">{{introItem.itemBody}}</label>
+                </div>
+              </div>
+              </div>
+          </div>
         </div>
-      </div>
 
     </div>
 
@@ -30,6 +30,7 @@
     import Store from "../utils/store";
 
     import {$ajax} from "../plugins/request";
+    import {$fadeIn, $fadeOut} from "../plugins/anime"
     export default {
         data() {
             return {
@@ -57,7 +58,13 @@
                 types: ["", "success", "info", "warning", "danger"] //搜索历史tag式样
             };
         },
-        methods: {
+        mounted(){
+          $fadeIn(100,0.5,document.getElementById("pic-box"))
+        },
+      destroyed() {
+          $fadeOut(100,0.1,document.getElementById("pic-box"))
+      },
+      methods: {
             focus() {
                 this.isFocus = true;
                 this.historySearchList =
@@ -207,4 +214,5 @@
       height: 100%;
       width: 2000px;
     }
+
 </style>
