@@ -1,58 +1,29 @@
 <template>
 
-    <main class="home">
-<!--        <div>-->
-<!--            <el-row class="searchBox">-->
-<!--                <el-col :span="8" class="center">-->
-<!--                    <el-input-->
-<!--                            v-model="search"-->
-<!--                            @focus="focus"-->
-<!--                            @blur="blur"-->
-<!--                            @keyup.enter.native="searchHandler"-->
-<!--                            placeholder="Please enter the entity"-->
-<!--                    >-->
-<!--                        <el-button slot="append" icon="el-icon-search" id="search" @click="searchHandler"></el-button>-->
-<!--                    </el-input>-->
-<!--                    &lt;!&ndash;-设置z-index优先级,防止被走马灯效果遮挡&ndash;&gt;-->
-<!--                    <el-card-->
-<!--                            @mouseenter="enterSearchBoxHanlder"-->
-<!--                            v-if="isSearch"-->
-<!--                            class="box-card"-->
-<!--                            id="search-box"-->
-<!--                            style="position:relative;z-index:15"-->
-<!--                    >-->
-<!--                        <dl v-if="isHistorySearch">-->
-<!--                            <dt class="search-title" v-show="history">历史搜索</dt>-->
-<!--                            <dt class="remove-history" v-show="history" @click="removeAllHistory">-->
-<!--                                <i class="el-icon-delete"></i>清空历史记录-->
-<!--                            </dt>-->
-<!--                            <el-tag-->
-<!--                                    v-for="search in historySearchList"-->
-<!--                                    :key="search.id"-->
-<!--                                    closable-->
-<!--                                    :type="search.type"-->
-<!--                                    @close="closeHandler(search)"-->
-<!--                                    style="margin-right:5px; margin-bottom:5px;"-->
-<!--                            >{{search.name}}</el-tag>-->
-<!--                            <dt class="search-title">热门搜索</dt>-->
-<!--                            <dd v-for="search in hotSearchList" :key="search.id">{{search}}</dd>-->
-<!--                        </dl>-->
-<!--                    </el-card>-->
-<!--                </el-col>-->
-<!--            </el-row>-->
-<!--        </div>-->
+    <div>
+      <div id="pic-box">
+        <div id="main-area">
+          <div class="curtain">
+            <div class="center-container">
+              <label id="headline">NKG知识图谱</label>
+            </div>
+          </div>
 
+        </div>
+        <div id="bottom-area">
+          <div class="curtain" style="display: flex;flex-direction: row;">
+            <div id="intro-item" v-for="introItem of this.introItemList">
+              <div class="center-container">
+                <label id="intro-item-head">{{introItem.itemHead}}</label>
+                <label id="intro-item-body">{{introItem.itemBody}}</label>
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
 
-<!--        <div v-if="isSearchList">-->
-<!--            <section class="list">-->
-<!--                <article v-for="searchResult of searchResultList" @click="getEntity(searchResult.id)">-->
-<!--                    <h2 v-html="searchResult.id"></h2>-->
-<!--                    <p v-html="searchResult.data.content"></p>-->
-<!--                    <p v-html="searchResult.text"></p>-->
-<!--                </article>-->
-<!--            </section>-->
-<!--        </div>-->
-    </main>
+    </div>
+
 </template>
 
 <script>
@@ -62,7 +33,21 @@
     export default {
         data() {
             return {
-                search: "", //当前输入框的值
+              introItemList:[
+                {
+                  itemHead:"功能",
+                  itemBody:"功能详情"
+                },
+                {
+                  itemHead:"功能",
+                  itemBody:"功能详情"
+                },
+                {
+                  itemHead:"功能",
+                  itemBody:"功能详情"
+                },
+              ],
+              search: "", //当前输入框的值
                 isFocus: false, //是否聚焦
                 isSearched: false, //是否确认搜索
                 hotSearchList: ["暂无热门搜索"], //热门搜索数据
@@ -170,5 +155,56 @@
         height: 300px;
         margin-top: 0px;
         padding-bottom: 20px;
+    }
+    #main-area{
+    }
+    #headline{
+      font-size: 90px;
+      font-family: 华文新魏;
+      color: white;
+      margin-top: 280px;
+    }
+    #pic-box{
+      width: 100%;
+      background-image: url("https://gitee.com/lconq/my-img-oss/raw/master/img/bg.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 100%;
+      position: absolute;
+      z-index: -1;
+    }
+    #bottom-area{
+      margin-top: 180px;
+    }
+    #intro-item{
+      font-family: 华文新魏;
+      width: 33%;
+      height: 200px;
+      padding-top: 100px;
+    }
+
+    #intro-item #intro-item-head{
+      color: white;
+      font-size: 45px;
+
+    }
+
+    #intro-item #intro-item-body{
+      margin-top: 40px;
+      color: white;
+      font-size: 25px;
+    }
+
+    .center-container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /*使子组件居中对齐*/
+      /*默认是竖直轴线上的居中*/
+    }
+    .curtain{
+      background-color: rgba(10,10,10,0.3);
+      height: 100%;
+      width: 2000px;
     }
 </style>
