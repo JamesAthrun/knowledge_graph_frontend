@@ -116,7 +116,6 @@
               let des_key_s = JSON.parse(response.data).key
               let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
               this.$state.key = des_key
-              console.log(this.$state.key)
             })
         },
         methods: {
@@ -129,8 +128,6 @@
                     name: this.username,
                     pwd: this.password,
                 }),this.$state.key)).then((response)=>{
-
-                    console.log(response)
                     if(response.code != 1){
                         this.$message({
                             type: 'error',
@@ -141,7 +138,11 @@
                         this.$state.user = this.username
                         this.$cookies.set("user_key",encryptByDES(this.$state.key,this.$state.key))
                         this.$cookies.set("user_name",this.$state.user)
-                        console.log(this.$cookies.get("user_key"))
+                        $ajax("getUserName","GET",{userName: this.username}).then(res=>{
+                            this.$state.id = JSON.parse(res.data)
+                            this.$cookies.set("user_id", this.$state.id)
+                        })
+                        console.log(this.$state.id)
                         this.$router.push('/user/home')
                     }
                 })
