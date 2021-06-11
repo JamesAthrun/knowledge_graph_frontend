@@ -204,7 +204,7 @@
 
     #pic-box{
       width: 100%;
-      background-image: url("https://gitee.com/lconq/my-img-oss/raw/master/img/bg.png");//背景图得换
+      background-image: url("https://gitee.com/lconq/my-img-oss/raw/master/img/bg-login.png");//背景图得换
       background-repeat: no-repeat;
       background-size: cover;
       height: 100%;
