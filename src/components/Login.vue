@@ -72,6 +72,7 @@
 
 <script>
     import {$ajax} from "../plugins/request";
+    import {$fadeIn, $fadeOut} from "../plugins/anime";
 
     export default {
         name: "Login",
@@ -104,6 +105,8 @@
             },
         },
         async mounted(){
+            $fadeIn(100,0.5,document.getElementById("pic-box"))
+
             console.log('login here')
             let sth = Math.random().toString()
             let k = cryptico.generateRSAKey(sth,1024)
@@ -119,7 +122,10 @@
               console.log(this.$state.key)
             })
         },
-        methods: {
+      destroyed() {
+        $fadeOut(100,0.1,document.getElementById("pic-box"))
+      },
+      methods: {
             async operation() {
                 await this[this.mode]()
             },
