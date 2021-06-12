@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="login-top">
   <div id="pic-box"></div>
 
   <div class="center-container">
@@ -121,9 +121,6 @@
               this.$state.key = des_key
             })
         },
-      destroyed() {
-        $fadeOut(100,0.1,document.getElementById("pic-box"))
-      },
       methods: {
             async operation() {
                 await this[this.mode]()
@@ -147,9 +144,9 @@
                         $ajax("getUserName","GET",{userName: this.username}).then(res=>{
                             this.$state.id = JSON.parse(res.data)
                             this.$cookies.set("user_id", this.$state.id)
+                            console.log(this.$state.id)
+                            this.$router.push('/user/home')
                         })
-                        console.log(this.$state.id)
-                        this.$router.push('/user/home')
                     }
                 })
 
