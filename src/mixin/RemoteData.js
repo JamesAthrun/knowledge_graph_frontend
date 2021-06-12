@@ -1,6 +1,6 @@
-export default function (resources){
+export default function (resources) {
     return {
-        data () {
+        data() {
             let initData = {
                 remoteDataLoading: 0,
             }

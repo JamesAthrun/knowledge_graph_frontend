@@ -2,17 +2,14 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import AppLayout from './components/AppLayout.vue'
 import router from "./router"
-import VueFetch, { $fetch } from './plugins/request'
+import VueFetch from './plugins/request'
 import echarts from 'echarts'
 import './global-components'
 import ElementUI from 'element-ui' //element-ui的全部组件
-import 'element-ui/lib/theme-chalk/index.css'//element-ui的css
-import './global-components'
+import 'element-ui/lib/theme-chalk/index.css' //element-ui的css
 import state from "./state"
 import VueState from "./plugins/state"
 import VueCookies from 'vue-cookies'
-import axios from "axios"
-import VueAxios from "vue-axios"
 
 Vue.prototype.$echarts = echarts
 Vue.use(ElementUI)
@@ -25,7 +22,7 @@ Vue.use(VueFetch, {
 })
 
 new Vue({
-    el:'#app',
+    el: '#app',
     data: state,
     render: h => h(AppLayout),
     router

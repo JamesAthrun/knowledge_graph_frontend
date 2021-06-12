@@ -1,16 +1,15 @@
-
 <template>
   <div class="row">
     <component
-      :is="element"
-      class="input"
-      :class="inputClass"
-      :name="name"
-      :type="type"
-      :value.prop="text"
-      @input="update"
-      :placeholder="placeholder"
-      v-bind="$attrs" />
+        :is="element"
+        v-bind="$attrs"
+        :class="inputClass"
+        :name="name"
+        :placeholder="placeholder"
+        :type="type"
+        :value.prop="text"
+        class="input"
+        @input="update"/>
   </div>
 </template>
 
@@ -42,19 +41,19 @@ export default {
   },
 
   computed: {
-    inputClass () {
+    inputClass() {
       return {
         'invalid': this.invalid,
       }
     },
 
-    element () {
+    element() {
       return this.type === 'textarea' ? this.type : 'input'
     },
   },
 
   methods: {
-    update (event) {
+    update(event) {
       this.$emit('update', event.currentTarget.value)
     },
   },

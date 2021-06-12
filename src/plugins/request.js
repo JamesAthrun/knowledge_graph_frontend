@@ -1,7 +1,7 @@
 let baseUrl
 
 export default {
-    install (Vue, options) {
+    install(Vue, options) {
         console.log('Installed', options)
 
         baseUrl = options.baseUrl
@@ -14,7 +14,7 @@ export async function $fetch(url, options) {
     const finalOptions = Object.assign({}, {
         headers: {
             'Content-Type': 'application/json',
-            "Access-Control-Allow-Origin":"*"
+            "Access-Control-Allow-Origin": "*"
         },
         //credentials: 'include',
     }, options)
@@ -31,7 +31,7 @@ export async function $fetch(url, options) {
     }
 }
 
-export async function $ajax(biasUrl,type,data) {
+export async function $ajax(biasUrl, type, data) {
     return $.ajax({
         url: `${baseUrl}${biasUrl}`,
         type: type,

@@ -2,17 +2,17 @@
   <form @submit.prevent="submit">
     <section class="content">
       <div class="title">{{ title }}</div>
-      <slot />
+      <slot/>
 
       <div class="actions">
-        <slot name="actions" />
+        <slot name="actions"/>
       </div>
 
-      <div class="error" v-if="error">{{ error }}</div>
+      <div v-if="error" class="error">{{ error }}</div>
     </section>
 
     <transition name="fade">
-      <Loading v-if="busy" class="overlay" />
+      <Loading v-if="busy" class="overlay"/>
     </transition>
   </form>
 </template>
@@ -20,7 +20,7 @@
 <script>
 export default {
   props: {
-    title:{
+    title: {
       type: String,
     },
     operation: {
@@ -30,7 +30,7 @@ export default {
       type: Boolean,
     }
   },
-  data () {
+  data() {
     return {
       error: null,
       busy: false,
@@ -38,7 +38,7 @@ export default {
   },
 
   methods: {
-    async submit () {
+    async submit() {
       if (this.valid && !this.busy) {
         this.error = null
         this.busy = true
@@ -55,11 +55,11 @@ export default {
 </script>
 
 <style>
-  .content>.title{
-    color: inherit;
-    font-size: 30px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
+.content > .title {
+  color: inherit;
+  font-size: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 
 </style>

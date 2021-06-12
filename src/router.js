@@ -17,14 +17,14 @@ import MyGroup from "./components/MyGroup";
 Vue.use(VueRouter)
 
 const routes = [
-    {path: '/', name:'home', component: Home},
+    {path: '/', name: 'home', component: Home},
     {path: '/check', name: 'check', component: CheckForm},
-    {path: '/entity/:id', name:'entity', component:Entity},
-    {path: '/entity/tree/:id', name:'entityTree', component:EntityTree},
-    {path: '/KGDetail/:id', name:'KGDetail', component:KGDetail},
-    {path: '/search', name:'innerSearch', component:SearchBox},
+    {path: '/entity/:id', name: 'entity', component: Entity},
+    {path: '/entity/tree/:id', name: 'entityTree', component: EntityTree},
+    {path: '/KGDetail/:id', name: 'KGDetail', component: KGDetail},
+    {path: '/search', name: 'innerSearch', component: SearchBox},
     {path: '/question', name: 'innerQuestion', component: Question},
-    {path: '/createNew', name:'createNew', component:CreateNew},
+    {path: '/createNew', name: 'createNew', component: CreateNew},
     {path: '/login', name: 'login', component: Login},
     {path: '/user/home', name: 'myHome', component: MyHome},
     {path: '/user/myKG', name: 'myKG', component: MyKGList},
