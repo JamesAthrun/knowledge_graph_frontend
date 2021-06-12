@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="login-top">
   <div id="pic-box"></div>
 
   <div class="center-container">
@@ -105,7 +105,7 @@
             },
         },
         async mounted(){
-            $fadeIn(100,0.5,document.getElementById("pic-box"))
+            $fadeIn(100,0.5,document.getElementById("login-top"))
 
             console.log('login here')
             let sth = Math.random().toString()
@@ -121,9 +121,9 @@
               this.$state.key = des_key
             })
         },
-      destroyed() {
-        $fadeOut(100,0.1,document.getElementById("pic-box"))
-      },
+      // beforeDestroy() {
+      //   $fadeOut(100,0.1,document.getElementById("pic-box"))
+      // },
       methods: {
             async operation() {
                 await this[this.mode]()
@@ -149,7 +149,12 @@
                             this.$cookies.set("user_id", this.$state.id)
                         })
                         console.log(this.$state.id)
-                        this.$router.push('/user/home')
+                        $fadeOut(100,10,document.getElementById("login-top"))
+
+                        let jumpOut = () =>{
+                          this.$router.push('/user/home')
+                        }
+                        setTimeout(jumpOut,500)
                     }
                 })
 
