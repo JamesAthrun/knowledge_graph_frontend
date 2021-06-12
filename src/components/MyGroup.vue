@@ -105,14 +105,14 @@
                     this.groupList=JSON.parse(res.data)
                     console.log(this.groupList)
                 }
+                if(!this.isAuthorized){
+                    this.$router.go(-1)
+                    this.$message({
+                        type: 'error',
+                        message: '您没有权限访问用户组！'
+                    });
+                }
             })
-            if(!this.isAuthorized){
-                this.$router.go(-1)
-                this.$message({
-                    type: 'error',
-                    message: '您没有权限访问用户组！'
-                });
-            }
         }
     }
 </script>
