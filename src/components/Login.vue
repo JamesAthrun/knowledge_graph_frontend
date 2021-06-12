@@ -105,7 +105,7 @@
             },
         },
         async mounted(){
-            $fadeIn(100,0.5,document.getElementById("pic-box"))
+            $fadeIn(100,0.5,document.getElementById("login-top"))
 
             console.log('login here')
             let sth = Math.random().toString()

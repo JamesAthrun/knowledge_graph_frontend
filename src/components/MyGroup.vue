@@ -10,7 +10,7 @@
                         v-for="group in groupList"
                         :key="group.groupId"
                         type="success"
-                        style="margin-right:100px; margin-bottom:50px;"
+                        style="margin-right:100px; margin-bottom:50px; font-size: 18px"
                         @click="viewDetail(group.groupId)"
                 >{{group.name}}</el-tag>
             </el-col>
@@ -86,8 +86,11 @@
                     else{
                         this.formInfo={name:'', description:''}
                         this.clickToCreate = false
+                        this.$message({
+                            type: 'success',
+                            message: '创建成功'
+                        })
                         console.log('ok')
-                        console.log(res)
                     }
                 })
             }
@@ -100,7 +103,7 @@
                 }
                 else{
                     this.groupList=JSON.parse(res.data)
-                    console.log(this.group)
+                    console.log(this.groupList)
                 }
             })
             if(!this.isAuthorized){

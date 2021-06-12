@@ -61,9 +61,9 @@
         mounted(){
           $fadeIn(100,0.5,document.getElementById("pic-box"))
         },
-        // beforeDestroy() {
-        //   $fadeOut(100,0.5,document.getElementById("pic-box"))
-        // },
+      // beforeDestroy() {
+      //     $fadeOut(100,0.1,document.getElementById("pic-box"))
+      // },
       methods: {
             focus() {
                 this.isFocus = true;
