@@ -1,68 +1,78 @@
 <template>
-    <main class="login">
-        <h1>Please login to continue</h1>
-        <SmartForm
-                class="form"
-                :title="title"
-                :operation="operation"
-                :valid="valid">
-            <FormInput
-                    name="username"
-                    v-model="username"
-                    placeholder="Username" />
-            <FormInput
-                    name="password"
-                    type="password"
-                    v-model="password"
-                    placeholder="Password" />
-            <template v-if="mode === 'signup'">
-                <FormInput
-                        name="verify-password"
-                        type="password"
-                        v-model="password2"
-                        placeholder="Retype Password"
-                        :invalid="retypePasswordError" />
-                <FormInput
-                        name="email"
-                        type="email"
-                        v-model="email"
-                        placeholder="Email" />
-            </template>
+  <div>
+  <div id="pic-box"></div>
 
-            <template slot="actions">
-                <template v-if="mode === 'login'">
-                    <button
-                            type="button"
-                            class="secondary"
-                            @click="mode = 'signup'">
-                        Sign up
-                    </button>
-                    <button
-                            type="submit"
-                            :disabled="!valid">
-                        Login
-                    </button>
-                </template>
-                <template v-else-if="mode === 'signup'">
-                    <button
-                            type="button"
-                            class="secondary"
-                            @click="mode = 'login'">
-                        Back to login
-                    </button>
-                    <button
-                            type="submit"
-                            :disabled="!valid">
-                        Create account
-                    </button>
-                </template>
+  <div class="center-container">
+      <div id="login">
+        <div class="curtain">
+        <div class="center-container" style="padding-top: 100px">
+            <label class="welcome">Welcome, adventurer.</label>
+            <label class="welcome">Show your certificate to advance...</label>
+        </div>
+        <SmartForm id="login-form" :title="title" :operation="operation" :valid="valid">
+          <FormInput
+              name="username"
+              v-model="username"
+              placeholder="Username" />
+          <FormInput
+              name="password"
+              type="password"
+              v-model="password"
+              placeholder="Password" />
+          <template v-if="mode === 'signup'">
+            <FormInput
+                name="verify-password"
+                type="password"
+                v-model="password2"
+                placeholder="Retype Password"
+                :invalid="retypePasswordError" />
+            <FormInput
+                name="email"
+                type="email"
+                v-model="email"
+                placeholder="Email" />
+          </template>
+
+          <template slot="actions">
+            <template v-if="mode === 'login'">
+              <button
+                  type="button"
+                  class="secondary"
+                  @click="mode = 'signup'">
+                Sign up
+              </button>
+              <button
+                  type="submit"
+                  :disabled="!valid">
+                Login
+              </button>
             </template>
+            <template v-else-if="mode === 'signup'">
+              <button
+                  type="button"
+                  class="secondary"
+                  @click="mode = 'login'">
+                Back to login
+              </button>
+              <button
+                  type="submit"
+                  :disabled="!valid">
+                Create account
+              </button>
+            </template>
+          </template>
         </SmartForm>
-    </main>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
 </template>
 
 <script>
     import {$ajax} from "../plugins/request";
+    import {$fadeIn, $fadeOut} from "../plugins/anime";
 
     export default {
         name: "Login",
@@ -95,6 +105,8 @@
             },
         },
         async mounted(){
+            $fadeIn(100,0.5,document.getElementById("pic-box"))
+
             console.log('login here')
             let sth = Math.random().toString()
             let k = cryptico.generateRSAKey(sth,1024)
@@ -107,10 +119,12 @@
               let des_key_s = JSON.parse(response.data).key
               let des_key = k.decrypt(cryptico.b64to16(des_key_s))//私钥解密
               this.$state.key = des_key
-              console.log(this.$state.key)
             })
         },
-        methods: {
+      destroyed() {
+        $fadeOut(100,0.1,document.getElementById("pic-box"))
+      },
+      methods: {
             async operation() {
                 await this[this.mode]()
             },
@@ -120,8 +134,6 @@
                     name: this.username,
                     pwd: this.password,
                 }),this.$state.key)).then((response)=>{
-
-                    console.log(response)
                     if(response.code != 1){
                         this.$message({
                             type: 'error',
@@ -132,7 +144,11 @@
                         this.$state.user = this.username
                         this.$cookies.set("user_key",encryptByDES(this.$state.key,this.$state.key))
                         this.$cookies.set("user_name",this.$state.user)
-                        console.log(this.$cookies.get("user_key"))
+                        $ajax("getUserName","GET",{userName: this.username}).then(res=>{
+                            this.$state.id = JSON.parse(res.data)
+                            this.$cookies.set("user_id", this.$state.id)
+                        })
+                        console.log(this.$state.id)
                         this.$router.push('/user/home')
                     }
                 })
@@ -173,9 +189,46 @@
 </script>
 
 <style lang="stylus" scoped>
-    .form {
-        >>> .content {
-            max-width: 400px;
-        }
+    #login-form >>> .content {
+        max-width: 400px;
+        font-size: 20px;
+        font-family: "华文新魏";
+        color aliceblue;
     }
+
+    .welcome{
+      font-size: 50px;
+      font-family: "华文新魏";
+      color: aliceblue;
+      padding: 20px;
+    }
+
+    #pic-box{
+      width: 100%;
+      background-image: url("https://gitee.com/lconq/my-img-oss/raw/master/img/bg-login.png");//背景图得换
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 100%;
+      position: absolute;
+      z-index: -1;
+    }
+
+    #login{
+      position: fixed;
+    }
+
+    .center-container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      //使子组件居中对齐
+      //默认是竖直轴线上的居中
+    }
+    .curtain{
+      background-color: rgba(10,10,10,0.3);
+      height: 100%;
+      width: 2000px;
+    }
+
+
 </style>

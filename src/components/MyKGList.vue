@@ -1,27 +1,29 @@
 <template>
     <main class="myKG">
-        <el-col  class="vermenu">
-            <VerticalNav/>
-        </el-col>
-        <el-col>
-            <div class="listOfGraph">
-                <el-table :data="graphList" ref="table" @row-click="getDetail">
-                    <el-table-column type="expand">
-                        <template slot-scope="props">
-                            <el-form label-position="left" inline class="demo-table-expand">
-                                <el-form-item label="">
-                                    <span>{{ props.row.description }}</span>
-                                </el-form-item>
-                            </el-form>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="tableId" label="编号"></el-table-column>
-                    <el-table-column prop="name" label="名称"></el-table-column>
-                    <el-table-column prop="ver" label="最新版本"></el-table-column>
-                </el-table>
-            </div>
-        </el-col>
-
+        <el-row>
+            <el-col class="vermenu">
+                <VerticalNav/>
+            </el-col>
+            <el-col class="KGlist">
+                <div class="listOfGraph">
+                    <el-table :data="graphList" ref="table" @row-click="getDetail">
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="">
+                                        <span>{{ props.row.description }}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="tableId" label="编号"></el-table-column>
+                        <el-table-column prop="name" label="名称"></el-table-column>
+                        <el-table-column prop="ver" label="最新版本"></el-table-column>
+                        <el-table-column prop="ver" label="权限"></el-table-column>
+                    </el-table>
+                </div>
+            </el-col>
+        </el-row>
     </main>
 </template>
 
@@ -47,6 +49,7 @@
                 this.graphList=JSON.parse(res.data)
                 console.log(this.graphList)
             })
+
         },
         components:{
             VerticalNav
@@ -57,5 +60,9 @@
 <style scoped>
     .vermenu{
         width: 15%;
+    }
+    .KGlist{
+        width: 80%;
+        padding: 20px;
     }
 </style>

@@ -1,12 +1,13 @@
 <template>
     <main class="myHome">
-        <el-col  class="vermenu">
-            <VerticalNav/>
-        </el-col>
-        <el-col>
-            <h1>Hi,{{this.$state.user}}</h1>
-        </el-col>
-
+        <el-row>
+            <el-col  class="vermenu">
+                <VerticalNav/>
+            </el-col>
+            <el-col>
+                <h1>Hi,{{this.$state.user}}</h1>
+            </el-col>
+        </el-row>
     </main>
 </template>
 
@@ -20,10 +21,10 @@
             }
         },
         methods:{
-            getDetail(row){
-                this.$router.push(`/KGDetail/${row.tableId}`)
-                console.log(row.tableId)
-            }
+            // getDetail(row){
+            //     this.$router.push(`/KGDetail/${row.tableId}`)
+            //     console.log(row.tableId)
+            // }
         },
         async created() {
             // $ajax("KG/getAllGraphInfo","GET"

@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="submit">
     <section class="content">
-      <h2>{{ title }}</h2>
+      <div class="title">{{ title }}</div>
       <slot />
 
       <div class="actions">
@@ -53,3 +53,13 @@ export default {
   },
 }
 </script>
+
+<style>
+  .content>.title{
+    color: inherit;
+    font-size: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+</style>
