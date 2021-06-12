@@ -938,8 +938,11 @@
                     console.log(response)
                     this.displayData = JSON.parse(response.data).itemData
 
+                    let colorList = ['#ff0000', '#0000ff', '#007f00']
+
                     for (var i = 0; i < this.displayData.length; i ++) {
-                        this.displayData[i].nodeshape = parseInt(this.displayData[i].nodeshape)
+                        this.displayData[i].nodeShape = 0
+                        this.displayData[i].color = colorList[parseInt(this.displayData[i].nodeshape) - 1]
                     }
 
                     this.displayLine = JSON.parse(response.data).link
