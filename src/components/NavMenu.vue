@@ -17,7 +17,7 @@
   <!--    </nav>-->
   <div class="menu">
     <button style="background: white;border: none" v-on:click="backHome">
-      <img class="img" src="assets/logo.svg"/>
+      <img class="img" src="https://gitee.com/lconq/my-img-oss/raw/master/img/logo.png"/>
     </button>
     <div class="spacer"></div>
     <el-menu class="el-menu-demo" default-active="/" mode="horizontal" router @select="handleSelect">
