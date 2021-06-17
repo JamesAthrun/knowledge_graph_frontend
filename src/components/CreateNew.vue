@@ -30,11 +30,12 @@
       </div>
     </div>
 
+
   </main>
 </template>
 
 <script>
-
+import baseUrl from "../main"
 import {$ajax} from "../plugins/request";
 
 export default {
@@ -42,6 +43,7 @@ export default {
     return {
       createByWhiteBoard: false,
       createByJSON: false,
+      uploadUrl:baseUrl+"KG/uploadFile",
       fileList: [],
       uploadData: [],
       newGraphData: [],
@@ -76,24 +78,13 @@ export default {
       let reader = new FileReader()
       reader.readAsText(file.raw, 'utf-8')
       reader.onload = ((e) => {
-        this.uploadData = []
-        this.uploadData = JSON.parse(e.target.result)
-        this.newGraphData =
-            {
-              "entity": this.uploadData.entity,
-              "property": this.uploadData.property,
-              "triple": this.uploadData.triple
-            }
-        console.log(JSON.stringify(this.newGraphData));
+        let textStr = (e.target.result).toString()
+        this.uploadData = JSON.parse(textStr)
       })
     },
     save() {
       $ajax("KG/createGraphByJsonStr", "POST",
-          JSON.stringify({
-            "entity": this.uploadData.entity,
-            "property": this.uploadData.property,
-            "triple": this.uploadData.triple
-          })
+          JSON.stringify(this.uploadData)
       ).then(() => {
         console.log("ok")
         this.$message({

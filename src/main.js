@@ -16,9 +16,13 @@ Vue.use(ElementUI)
 Vue.use(VueState, state)
 Vue.use(VueCookies)
 
+let baseUrl = 'http://localhost:8082/'
+// let baseUrl = 'http://192.168.3.15:8082/'
+export default baseUrl
+
 Vue.use(VueFetch, {
     //baseUrl: 'http://192.168.3.15:8082/'
-    baseUrl: 'http://123.57.200.185:8082/'
+    baseUrl: baseUrl
 })
 
 new Vue({
