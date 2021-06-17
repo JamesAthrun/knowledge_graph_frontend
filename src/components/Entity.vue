@@ -199,7 +199,7 @@ export default {
         // 这里可以参考"Graph 图谱"中的参数进行设置
       },
 
-      tableId: 0,
+      tableId: this.$cookies.get("table_id"),
       currentCreateId: 1,
       user: this.$state.user,
       propertyList: [],

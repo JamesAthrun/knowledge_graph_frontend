@@ -74,7 +74,7 @@ export default {
         if (this.graphList[j].userId == this.$cookies.get("user_id")) {
           temp_authority = temp_authority > (this.graphList[j].authority / 100) ? temp_authority : this.graphList[j].authority / 100
         }
-        for (let i = 0, l = this.graphList.length; i < l; i++) {
+        for (let i = 0, l = this.groupList.length; i < l; i++) {
           if (this.graphList[j].groupId == this.groupList[i].groupId) {
             temp_authority = temp_authority > ((this.graphList[j].authority / 10) % 10) ? temp_authority : (this.graphList[j].authority / 10) % 10
           }
