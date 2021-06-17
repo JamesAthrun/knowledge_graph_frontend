@@ -131,20 +131,41 @@ export default {
       $ajax('/addGroup', 'POST', JSON.stringify(this.formInfo)).then(res => {
         if (res.code != 1) {
           this.$alert('创建失败')
-          console.log(res)
         } else {
-          this.formInfo = {name: '', description: ''}
-          this.clickToCreate = false
-          this.$message({
-            type: 'success',
-            message: '创建成功'
+          $ajax('/addUsertoGroup','GET',{groupName: this.formInfo.name, userId:this.$cookies.get("user_id")}).then(res=>{
+            if(res.code!=1){
+              this.$alert('创建失败')
+            }
+            else{
+              this.formInfo = {name: '', description: ''}
+              this.clickToCreate = false
+              this.$message({
+                type: 'success',
+                message: '创建成功'
+              })
+              console.log('ok')
+            }
           })
-          console.log('ok')
         }
       })
     },
     submitAdd(){
-
+      $ajax('/addUsertoGroup','GET',{groupName: this.formInfo.name, userId:this.$cookies.get("user_id")}).then(res=>{
+        if(res.code==1){
+          this.$message({
+            type: 'success',
+            message: '加入成功'
+          })
+          this.formInfo = {name: '', description: ''}
+          this.clickToAdd = false
+        }
+        else if(res.code==4){
+          this.$alert('您已加入该用户组')
+        }
+        else{
+          this.$alert('加入失败')
+        }
+      })
     }
   },
   async created() {

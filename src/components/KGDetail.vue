@@ -4,7 +4,7 @@
       <el-col class="left">
         <el-row class="description">
           <h1>{{ this.tableName }}</h1>
-          <h2>{{ this.graphInfo.description }}</h2>
+          <span>{{ this.graphInfo.description }}</span>
         </el-row>
         <el-row class="functionArea">
           <div class="buttonStyle">
@@ -27,7 +27,7 @@
               :show-header="false"
               @row-dblclick="rowback"
           >
-            <el-table-column label="版本号" prop="ver" width="50"></el-table-column>
+            <el-table-column label="版本号" prop="ver"></el-table-column>
             <el-table-column label="详情" prop="detail"></el-table-column>
             <el-table-column label="提交时间" prop="time" sortable></el-table-column>
             <el-table-column
@@ -174,6 +174,8 @@ export default {
 
 .history {
   position: relative;
+  margin-left: 5%;
+  margin-top: 10%;
   max-height: 800px;
   overflow-y: auto; /* 当内容过多时y轴出现滚动条 */
   background-color: #ffffff;
