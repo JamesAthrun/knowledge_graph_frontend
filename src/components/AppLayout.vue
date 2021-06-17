@@ -1,14 +1,6 @@
 <template>
   <div class="app-layout">
     <NavMenu/>
-    <!--<header class="header">
-        <div>
-            <img class="img"
-                 src="assets/logo.svg"/>
-        </div>
-        <div>Knowledge Graph</div>
-    </header>-->
-
     <router-view/>
   </div>
 </template>

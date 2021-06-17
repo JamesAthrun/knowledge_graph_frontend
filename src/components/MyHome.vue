@@ -21,17 +21,10 @@ export default {
     }
   },
   methods: {
-    // getDetail(row){
-    //     this.$router.push(`/KGDetail/${row.tableId}`)
-    //     console.log(row.tableId)
-    // }
+
   },
   async created() {
-    // $ajax("KG/getAllGraphInfo","GET"
-    // ).then(res=>{
-    //     this.graphList=JSON.parse(res.data)
-    //     console.log(this.graphList)
-    // })
+
   },
   components: {
     VerticalNav
@@ -40,12 +33,6 @@ export default {
 </script>
 
 <style scoped>
-.listOfGraph {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-}
 
 .vermenu {
   width: 15%;

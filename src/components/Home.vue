@@ -134,41 +134,6 @@ export default {
 </script>
 
 <style scoped>
-.searchBox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.center {
-  justify-content: center;
-  align-items: center;
-}
-
-#search {
-  background-color: #ffffff;
-  border-radius: 0%;
-}
-
-.search-title {
-  color: #bdbaba;
-  font-size: 15px;
-  margin-bottom: 5px;
-}
-
-.remove-history {
-  color: #bdbaba;
-  font-size: 15px;
-  float: right;
-  margin-top: -22px;
-}
-
-#search-box {
-  width: 555px;
-  height: 300px;
-  margin-top: 0px;
-  padding-bottom: 20px;
-}
 
 #main-area {
 }

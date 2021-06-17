@@ -52,18 +52,6 @@
 <script>
 
 export default {
-  /*props:{
-      newLine: {
-          type: String,
-      },
-      displayData: {
-          type: Array,
-
-      },
-      propertyList: {
-          type: Array,
-      }
-  },*/
   props: ["newLine", "displayData", "propertyList"],
   components: {},
   data() {

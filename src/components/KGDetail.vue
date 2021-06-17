@@ -172,13 +172,6 @@ export default {
   /*line-height: 50px;*/
 }
 
-.searchEntity {
-  position: relative;
-  height: 500px;
-  overflow-y: auto; /* 当内容过多时y轴出现滚动条 */
-
-}
-
 .history {
   position: relative;
   max-height: 800px;

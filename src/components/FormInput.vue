@@ -58,24 +58,6 @@ export default {
     },
   },
 
-  /* render (h) {
-    return h('div', { class: 'row' }, [
-      h(this.element, {
-        class: ['input', this.inputClass],
-        attrs: {
-          type: this.type,
-          placeholder: this.placeholder,
-          ...this.$attrs,
-        },
-        domProps: {
-          value: this.text,
-        },
-        on: {
-          input: this.update,
-        },
-      }),
-    ])
-  }, */
 }
 </script>
 
