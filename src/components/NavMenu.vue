@@ -1,20 +1,4 @@
 <template>
-  <!--    <nav class="menu">-->
-  <!--        <button style="height: 20px;width: 20px;background: white" class="star-btn" v-on:click="backHome">-->
-  <!--            <img class="img" src="assets/logo.svg"/>-->
-  <!--        </button>-->
-  <!--        <div class="spacer"></div>-->
-  <!--        <router-link :to="{ name: 'home' }" exact>Home</router-link>-->
-  <!--        <router-link :to="{ name: 'check' }">Check</router-link>-->
-  <!--        <router-link :to="{ name: 'createNew' }">CreateNew</router-link>-->
-  <!--        &lt;!&ndash;<router-link :to="{ name: 'download' }">Download</router-link>&ndash;&gt;-->
-
-  <!--        <template v-if="$state.user">-->
-  <!--            <a>{{ $state.user.username }}</a>-->
-  <!--            <a @click="logout">Logout</a>-->
-  <!--        </template>-->
-  <!--        <router-link v-else :to="{name: 'login'}">Login</router-link>-->
-  <!--    </nav>-->
   <div class="menu">
     <button style="background: white;border: none" v-on:click="backHome">
       <img class="img" src="https://gitee.com/lconq/my-img-oss/raw/master/img/logo.png"/>
@@ -23,20 +7,15 @@
     <el-menu class="el-menu-demo" default-active="/" mode="horizontal" router @select="handleSelect">
       <el-menu-item index="/">首页</el-menu-item>
       <el-menu-item disabled index="/check">问答</el-menu-item>
-      <el-menu-item index="/createNew">新建</el-menu-item>
       <el-submenu index="/user">
         <template slot="title">我的主页</template>
         <div v-if="this.$state.user==null">
           <el-menu-item index="/login">登录</el-menu-item>
         </div>
         <div v-else>
-          <!--                    <el-menu-item index="1" @click="userPage">{{this.$state.user}}</el-menu-item>-->
-          <!--                    <el-menu-item index="2" @click="graphPage">知识图谱</el-menu-item>-->
-          <!--                    <el-menu-item index="3" @click="logout">注销</el-menu-item>-->
           <el-menu-item index="/user/home">{{ this.$state.user }}</el-menu-item>
           <el-menu-item index="/user/myKG">知识图谱</el-menu-item>
           <el-menu-item index="/user/myGroup">用户组</el-menu-item>
-          <!--                    <el-menu-item route={path:'/:user/myKG',name:'myHome'}>知识图谱</el-menu-item>-->
           <el-menu-item index="/user" @click="logout">注销</el-menu-item>
 
         </div>
