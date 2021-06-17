@@ -98,4 +98,8 @@ export default {
   width: 80%;
   padding: 20px;
 }
+  .listOfGraph{
+    width: 90%;
+    left: 5%;
+  }
 </style>

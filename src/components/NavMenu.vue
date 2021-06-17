@@ -6,7 +6,7 @@
     <div class="spacer"></div>
     <el-menu class="el-menu-demo" default-active="/" mode="horizontal" router @select="handleSelect">
       <el-menu-item index="/">首页</el-menu-item>
-      <el-menu-item disabled index="/check">问答</el-menu-item>
+      <el-menu-item index="/createNew">新建</el-menu-item>
       <el-submenu index="/user">
         <template slot="title">我的主页</template>
         <div v-if="this.$state.user==null">
