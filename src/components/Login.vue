@@ -157,8 +157,8 @@ export default {
     async signup() {
       $ajax("signup", "POST",
           encryptByDES(JSON.stringify({
-            username: this.username,
-            password: this.password,
+            name: this.username,
+            pwd: this.password,
             email: this.email,
           }), this.$state.key)
       ).then((response) => {
