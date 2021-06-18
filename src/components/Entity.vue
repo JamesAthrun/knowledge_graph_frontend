@@ -276,7 +276,20 @@ export default {
       }
       let confirmTask = () => {
         console.log("confirm")
-        return $ajax("KG/confirmChange", "GET", {userName: this.user})
+        return $ajax("KG/confirmChange", "GET", {userName: this.user}).then(res=>{
+          if(res.code==1){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+          }
+          else{
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            });
+          }
+        })
       }
       taskList.push(confirmTask)
 

@@ -29,7 +29,7 @@
               fit
           >
             <el-table-column label="版本号" prop="ver"></el-table-column>
-            <el-table-column label="详情" prop="detail"></el-table-column>
+            <el-table-column label="详情" prop="detail" width="300" :show-overflow-tooltip='true'></el-table-column>
             <el-table-column label="提交时间" prop="time" sortable></el-table-column>
             <el-table-column
                 :filter-method="filterHandler"
@@ -117,7 +117,6 @@ export default {
       } else {
         this.graphInfo = JSON.parse(res.data)
         this.tableName = this.graphInfo.name
-        console.log(this.graphInfo.description)
       }
     })
     $ajax("KG/getGraphHistory", "GET"
@@ -125,12 +124,19 @@ export default {
       if (res.code != 1) {
       } else {
         this.graphHistory = JSON.parse(res.data)
-        console.log(this.graphHistory)
+        // this.graphHistory.detail
         for (let i = 0, len = this.graphHistory.length; i < len; i++) {
           if (this.graphHistory[i].drop == "0") {
             this.graphHistory[i].drop = ""
           } else {
             this.graphHistory[i].drop = "已失效"
+          }
+          if((this.graphHistory[i].detail instanceof Array)){
+            let tmpDetail = ''
+            for(let j=0,len=this.graphHistory[i].detail.length;j<len;j++){
+              tmpDetail = tmpDetail+this.graphHistory[i].detail[j].detail+'\n'
+            }
+            this.graphHistory[i].detail=tmpDetail
           }
         }
         console.log(this.graphHistory)
@@ -154,7 +160,7 @@ export default {
 
 .right {
   padding: 10px;
-  width: 30%;
+  width: 40%;
 }
 
 .functionArea {
@@ -172,7 +178,6 @@ export default {
   margin-top: 100px;
   position: relative;
   padding: 10px;
-  /*line-height: 50px;*/
 }
 
 .history {
@@ -183,4 +188,7 @@ export default {
   overflow-y: auto; /* 当内容过多时y轴出现滚动条 */
   background-color: #ffffff;
 }
+  .el-table .cell{
+    white-space: pre-wrap;
+  }
 </style>
