@@ -155,7 +155,7 @@ export default {
       }
       this.history = this.historySearchList.length == 0 ? false : true;
       console.log(document.cookie)
-      $ajax("KG/search", "GET", {keywords: this.search, ver: this.$cookies.get("table_latestVer")}
+      $ajax("KG/search", "GET", {keywords: this.search, ver: this.currentVer}
       ).then(res => {
         //重置
         this.currentDisplayList = []

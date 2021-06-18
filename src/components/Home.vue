@@ -11,7 +11,7 @@
 
       </div>
       <div id="bottom-area">
-        <div class="curtain" style="display: flex;flex-direction: row;">
+        <div class="curtain" style="position:relative; display: flex;flex-direction: row;">
           <div v-for="introItem of this.introItemList" id="intro-item">
             <div class="center-container">
               <label id="intro-item-head">{{ introItem.itemHead }}</label>
@@ -27,9 +27,6 @@
 </template>
 
 <script>
-import Store from "../utils/store";
-
-import {$ajax} from "../plugins/request";
 import {$fadeIn} from "../plugins/anime"
 
 export default {
@@ -37,99 +34,26 @@ export default {
     return {
       introItemList: [
         {
-          itemHead: "功能",
-          itemBody: "功能详情"
+          itemHead: "可视化",
+          itemBody: "我们为您提供多样的知识图谱可视化展示"
         },
         {
-          itemHead: "功能",
-          itemBody: "功能详情"
+          itemHead: "编辑",
+          itemBody: "我们为您提供便捷的知识图谱编辑功能"
         },
         {
-          itemHead: "功能",
-          itemBody: "功能详情"
+          itemHead: "版本控制",
+          itemBody: "欢迎您和伙伴们共建知识图谱"
         },
       ],
-      search: "", //当前输入框的值
-      isFocus: false, //是否聚焦
-      isSearched: false, //是否确认搜索
-      hotSearchList: ["暂无热门搜索"], //热门搜索数据
-      historySearchList: [], //历史搜索数据
-      searchResultList: ["暂无数据"], //搜索返回数据,
-      history: false,
-      types: ["", "success", "info", "warning", "danger"] //搜索历史tag式样
     };
   },
   mounted() {
     $fadeIn(100, 0.5, document.getElementById("pic-box"))
   },
-  // beforeDestroy() {
-  //     $fadeOut(100,0.1,document.getElementById("pic-box"))
-  // },
   methods: {
-    focus() {
-      this.isFocus = true;
-      this.historySearchList =
-          Store.loadHistory() == null ? [] : Store.loadHistory();
-      this.history = this.historySearchList.length == 0 ? false : true;
-    },
-    blur() {
-      const self = this;
-      this.searchBoxTimeout = setTimeout(function () {
-        self.isFocus = false;
-      }, 300);
-    },
-    enterSearchBoxHanlder() {
-      clearTimeout(this.searchBoxTimeout);
-    },
-    async searchHandler() {
-      //随机生成搜索历史tag式样
-      //let n = RandomUtil.getRandomNumber(0, 5);
-      let exist =
-          this.historySearchList.filter(value => {
-            return value.name == this.search;
-          }).length == 0
-              ? false
-              : true;
-      if (!exist) {
-        this.historySearchList.push({name: this.search, type: this.types[0]});
-        Store.saveHistory(this.historySearchList);
-      }
-      this.history = this.historySearchList.length == 0 ? false : true;
-      $ajax("KG/search", "GET", {keywords: this.search, ver: "0"}
-      ).then(res => {
-        console.log("ok")
-        this.searchResultList = JSON.parse(res.data).data;
-        this.isSearched = true;
-      })
 
-    },
-    closeHandler(search) {
-      this.historySearchList.splice(this.historySearchList.indexOf(search), 1);
-      Store.saveHistory(this.historySearchList);
-      clearTimeout(this.searchBoxTimeout);
-      if (this.historySearchList.length == 0) {
-        this.history = false;
-      }
-    },
-    removeAllHistory() {
-      Store.removeAllHistory();
-    },
-    getEntity(id) {
-      this.isSearched = false;
-      this.$router.push(`/entity/${id}`);
-    },
   },
-  computed: {
-    isHistorySearch() {
-      return this.isFocus && !this.search;
-    },
-    isSearchList() {
-      return this.isSearched && this.search;
-    },
-    isSearch() {
-      return this.isFocus;
-    }
-  }
 };
 </script>
 

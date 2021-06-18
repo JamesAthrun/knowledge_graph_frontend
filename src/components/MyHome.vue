@@ -5,7 +5,7 @@
         <VerticalNav/>
       </el-col>
       <el-col>
-        <h1>Hi,{{ this.$state.user }}</h1>
+        <h1 class="headLine">你好,{{ this.$state.user }}</h1>
       </el-col>
     </el-row>
   </main>
@@ -37,4 +37,9 @@ export default {
 .vermenu {
   width: 15%;
 }
+  .headLine{
+    font-size: 60px;
+    font-family: 华文新魏;
+    color: black;
+  }
 </style>

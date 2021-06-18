@@ -6,7 +6,7 @@
           <el-button v-if="isEditMode==false" round style="left: 0px; position: absolute;" type="primary"
                      @click="showTree">显示树图
           </el-button>
-          <el-button v-if="isEditMode==false" icon="el-icon-edit-outline" round style="right: 0px; position: absolute;"
+          <el-button v-if="isEditMode==false && isLatestVer" icon="el-icon-edit-outline" round style="right: 0px; position: absolute;"
                      type="primary" @click="startEdit">开始编辑
           </el-button>
           <el-button v-if="isEditMode==false" icon="el-icon-edit-outline" round style="right: 180px; position: absolute;"
@@ -183,6 +183,7 @@ export default {
       currentLineOrigin: {},
 
       isEditMode: false,
+      isLatestVer:this.$cookies.get("table_latestVer")==this.$cookies.get("table_currentVer"),
       isQuestionMode: false,
       currentEditMode: 'null',
 

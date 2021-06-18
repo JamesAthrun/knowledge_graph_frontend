@@ -26,6 +26,7 @@
               :data="graphHistory"
               :show-header="false"
               @row-dblclick="rowback"
+              fit
           >
             <el-table-column label="版本号" prop="ver"></el-table-column>
             <el-table-column label="详情" prop="detail"></el-table-column>
@@ -75,6 +76,7 @@ export default {
                     $ajax("KG/rollBackChange", "GET", {ver: row.ver}
                     ).then(res => {
                       if (res.code == 1) {
+                        this.$cookies.set("table_latestVer", row.ver)
                         this.$message({
                           type: 'success',
                           message: '回滚成功，请刷新页面'
