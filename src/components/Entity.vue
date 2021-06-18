@@ -6,12 +6,16 @@
           <el-button v-if="isEditMode==false" round style="left: 0px; position: absolute;" type="primary"
                      @click="showTree">显示树图
           </el-button>
-        </el-row>
-        <el-row style="top:30px; margin-bottom:30px;">
           <el-button v-if="isEditMode==false" icon="el-icon-edit-outline" round style="right: 0px; position: absolute;"
                      type="primary" @click="startEdit">开始编辑
           </el-button>
+          <el-button v-if="isEditMode==false" icon="el-icon-edit-outline" round style="right: 180px; position: absolute;"
+                     type="primary" @click="startAddQuestion">添加问题
+          </el-button>
         </el-row>
+<!--        <el-row style="top:30px; margin-bottom:30px;">-->
+<!--          -->
+<!--        </el-row>-->
         <el-dialog v-if="addNewNode" :visible="addNode" title="添加节点" width="50%">
           <AddNodeModal v-show="addNode" @cancel="cancelNewNode" @submitForm='createNewNode'></AddNodeModal>
         </el-dialog>
@@ -19,6 +23,10 @@
         <el-dialog v-if="addNewLine" :visible="addLine" title="添加关系" width="50%">
           <AddLineModal v-show="addLine" :displayData="displayData" :propertyList="propertyList" @cancel="cancelNewLine"
                         @submitForm='createNewLine'></AddLineModal>
+        </el-dialog>
+        <el-dialog v-if="isQuestionMode" :visible="isQuestionMode" title="新建问答" width="50%" :before-close="endAddQuestion">
+          <AddQuestionModal v-show="isQuestionMode" :displayData="displayData" @cancel="endAddQuestion"
+                            @submitForm='submitQuestion'></AddQuestionModal>
         </el-dialog>
 
         <el-row v-show="isEditMode">
@@ -151,10 +159,12 @@ import SeeksRelationGraph from "relation-graph";
 import AddNodeModal from "./AddNodeModal";
 import AddLineModal from "./AddLineModal";
 import {$ajax} from "../plugins/request";
+import AddQuestionModal from "./AddQuestionModal";
 
 export default {
   name: 'Demo',
   components: {
+    AddQuestionModal,
     SeeksRelationGraph,
     AddNodeModal,
     AddLineModal,
@@ -173,6 +183,7 @@ export default {
       currentLineOrigin: {},
 
       isEditMode: false,
+      isQuestionMode: false,
       currentEditMode: 'null',
 
       addNode: false,
@@ -233,6 +244,15 @@ export default {
       console.log('onLineClick:', lineObject)
       this.hideNodeTips()
       this.showLineTips(lineObject, $event)
+    },
+    startAddQuestion() {
+      console.log("start add question")
+      console.log(this.displayData)
+      this.isQuestionMode = true
+    },
+    endAddQuestion(){
+      console.log("end add question")
+      this.isQuestionMode=false
     },
     startEdit() {
       console.log("start edit")
@@ -356,6 +376,7 @@ export default {
     cancelNewNode() {
       this.addNode = false
     },
+
 
     addNewLine() {
       this.addLine = true
@@ -606,14 +627,56 @@ export default {
 
     showTree() {
       this.$router.push(`/entity/tree/${this.routeParamId}`);
-    }
+    },
+    submitQuestion(form) {
+      this.addNode = false
+      this.newNode.text = form.text
+      this.newNode.data.name = form.name
+
+      this.newNode.id = this.currentCreateId.toString()
+      this.currentCreateId += 1
+
+      //console.log(this.newNode)
+
+      this.displayData.push(this.newNode)
+
+      var __graph_json_data = {
+        rootId: this.rootId,
+        nodes: [
+          this.newNode
+        ],
+        links: [],
+      }
+      // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
+      this.$refs.seeksRelationGraph.appendJsonData(__graph_json_data, (seeksRGGraph) => {
+        // Called when the relation-graph is completed
+      })
+
+      this.isolatedNodeList.push(this.newNode)
+
+      let commitForm = {
+        "comment": "",
+        "division": "Class",
+        "headId": "",
+        "id": this.newNode.id,
+        "name": this.newNode.text,
+        "op": 'createItem',
+        "relationId": "",
+        "tableId": this.tableId,
+        "tailId": "",
+        "title": "",
+        "user": this.user
+      }
+      this.commitOperationList.push(commitForm)
+
+    },
 
   },
 
   async created() {
     console.log(document.cookie)
     this.routeParamId = this.$route.params.id
-    $ajax('KG/getGraphData', "GET", {id: this.routeParamId, ver: "0"}).then(
+    $ajax('KG/getGraphData', "GET", {id: this.routeParamId, ver: this.$cookies.get("table_latestVer")}).then(
         (response) => {
           console.log(response)
           this.displayData = JSON.parse(response.data).itemData

@@ -82,7 +82,7 @@ export default {
       search: "", //当前输入框的值
       isFocus: false, //是否聚焦
       isSearched: false, //是否确认搜索
-      hotSearchList: ["暂无热门搜索"], //热门搜索数据
+      hotSearchList: ["防疫措施","学生","公共交通"], //热门搜索数据
       historySearchList: [], //历史搜索数据
       searchResultList: ["暂无数据"], //搜索返回数据,
       history: false,
@@ -127,7 +127,7 @@ export default {
       }
       this.history = this.historySearchList.length == 0 ? false : true;
       console.log(document.cookie)
-      $ajax("KG/search", "GET", {keywords: this.search, ver: "0"}
+      $ajax("KG/search", "GET", {keywords: this.search, ver: this.$cookies.get("table_latestVer")}
       ).then(res => {
         //重置
         this.currentDisplayList = []

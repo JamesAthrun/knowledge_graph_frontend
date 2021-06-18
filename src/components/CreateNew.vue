@@ -94,21 +94,21 @@ export default {
             "title": "A1",
             "comment": "默认评论",
             "id": "1",
-            "name": "始祖头",
+            "name": "根节点",
             "division": "Abstract"
           },
           {
             "title": "A2",
             "comment": "默认评论",
             "id": "2",
-            "name": "始祖关系",
+            "name": "默认关系",
             "division": "Abstract"
           },
           {
             "title": "A3",
             "comment": "默认评论",
             "id": "3",
-            "name": "始祖尾",
+            "name": "test",
             "division": "Abstract"
           }
         ],

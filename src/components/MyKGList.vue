@@ -46,7 +46,7 @@ export default {
   methods: {
     getDetail(row) {
       this.$cookies.set("table_id", row.tableId)
-      this.$cookies.set("table_authority", row.new_authority)
+      this.$cookies.set("table_latestVer", row.ver)
       this.$router.push(`/KGDetail/${row.tableId}`)
       console.log(row.tableId)
     },

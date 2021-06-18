@@ -67,7 +67,7 @@ export default {
       this.$router.push({path: '/question'})
     },
     rowback(row) {
-      if (this.$cookies.get("table_authority")=="可写" && row.drop == "") {
+      if (row.drop == "") {
         this.$confirm('确认要进行回滚操作吗？')
             .then(_ => {
               this.$confirm('该操作不可逆，是否确认继续进行？')
@@ -106,6 +106,7 @@ export default {
     ).then(res => {
       if (res.code != 1) {
         this.$cookies.remove("table_id")
+        this.$cookies.remove("table_latestVer")
         this.$router.go(-1)
         this.$message({
           type: 'error',
