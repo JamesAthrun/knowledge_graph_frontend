@@ -629,7 +629,9 @@ export default {
     },
     submitQuestion(form) {
       console.log(JSON.stringify(form))
-      $ajax('KG/createQuestion','GET',{help: form.help, keyWords: form.keyWords, relatedIds: form.relatedIds, ver: form.ver}).then((res)=>{
+      $ajax('KG/createQuestion','GET',
+              {help: form.help, keyWords: JSON.stringify(form.keyWords),
+                relatedIds: JSON.stringify(form.relatedIds), ver: form.ver}).then((res)=>{
         if(res.code==1){
           this.isQuestionMode=false
           this.$message({
@@ -650,7 +652,8 @@ export default {
   async created() {
     console.log(document.cookie)
     this.routeParamId = this.$route.params.id
-    $ajax('KG/getGraphData', "GET", {id: this.routeParamId, ver: this.$cookies.get("table_latestVer")}).then(
+
+    $ajax('KG/getGraphData', "GET", {id: this.routeParamId, ver: this.$cookies.get("table_currentVer")}).then(
         (response) => {
           console.log(response)
           this.displayData = JSON.parse(response.data).itemData

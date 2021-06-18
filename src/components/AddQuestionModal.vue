@@ -31,7 +31,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <span>基于版本：{{this.$cookies.get("table_latestVer")}}</span>
+                    <span>基于版本：{{this.$cookies.get("table_currentVer")}}</span>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm">添加</el-button>
@@ -49,7 +49,7 @@
         data() {
             return {
                 form: {
-                    ver: this.$cookies.get("table_latestVer"),
+                    ver: this.$cookies.get("table_currentVer"),
                     help: '',
                     keyWords: [
                         {

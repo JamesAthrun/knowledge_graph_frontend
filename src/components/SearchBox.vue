@@ -39,8 +39,36 @@
             </dl>
           </el-card>
         </el-col>
+        <button class="chooseVerButton" @click="chooseVerMode=true">当前版本：{{currentVer}}</button>
       </el-row>
     </div>
+
+    <el-dialog
+            v-if="chooseVerMode"
+            :visible="chooseVerMode"
+            title="选择版本"
+            width="30%">
+      <el-form
+              class="demo-form-inline"
+              label-width="80px"
+      >
+        <el-form-item label="版本：" required>
+          <el-select value-key="ver" style="width: 50%" v-model="currentVer">
+            <el-option
+                    v-for="item in verList"
+                    :key="item.ver"
+                    :label="item.text"
+                    :value="item.ver"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item style="text-align: right;">
+          <el-button @click="chooseVerMode = false">取 消</el-button>
+          <el-button type="primary" @click="change">确 定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
 
 
     <div v-if="isSearchList">
@@ -64,7 +92,6 @@
             @current-change="handleCurrentChange">
         </el-pagination>
       </div>
-
     </div>
 
 
@@ -87,13 +114,14 @@ export default {
       searchResultList: ["暂无数据"], //搜索返回数据,
       history: false,
       types: ["", "success", "info", "warning", "danger"], //搜索历史tag式样
-
       currentPage: 1,
       pageSize: 10,
       total: 20,
       displayList: [],
-      currentDisplayList: []
-
+      currentDisplayList: [],
+      currentVer: 0,
+      verList: [],
+      chooseVerMode: false,
     };
   },
   methods: {
@@ -185,6 +213,11 @@ export default {
       this.currentPage = val;
       this.currentDisplayList = this.displayList[val - 1]
       console.log(`当前页: ${val}`);
+    },
+    change(){
+      this.$cookies.set("table_currentVer", this.currentVer)
+      console.log("版本切换为："+this.currentVer)
+      this.chooseVerMode = false
     }
   },
   computed: {
@@ -197,6 +230,14 @@ export default {
     isSearch() {
       return this.isFocus;
     }
+  },
+  async created(){
+    this.currentVer=this.$cookies.get("table_currentVer")==null? this.$cookies.get("table_latestVer"):this.$cookies.get("table_currentVer")
+    this.$cookies.set("table_currentVer", this.currentVer)
+    for(let i=0;i<=this.$cookies.get("table_latestVer");i++){
+      this.verList.push({ver:i, text:i})
+    }
+    console.log(this.verList)
   }
 };
 </script>
@@ -237,4 +278,11 @@ export default {
   margin-top: 0px;
   padding-bottom: 20px;
 }
+  .chooseVerButton{
+    position: relative;
+    left: 10px;
+    color: #232323;
+    background-color: white;
+    border: none;
+  }
 </style>
