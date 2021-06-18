@@ -247,7 +247,6 @@ export default {
     },
     startAddQuestion() {
       console.log("start add question")
-      console.log(this.displayData)
       this.isQuestionMode = true
     },
     endAddQuestion(){
@@ -629,48 +628,23 @@ export default {
       this.$router.push(`/entity/tree/${this.routeParamId}`);
     },
     submitQuestion(form) {
-      this.addNode = false
-      this.newNode.text = form.text
-      this.newNode.data.name = form.name
-
-      this.newNode.id = this.currentCreateId.toString()
-      this.currentCreateId += 1
-
-      //console.log(this.newNode)
-
-      this.displayData.push(this.newNode)
-
-      var __graph_json_data = {
-        rootId: this.rootId,
-        nodes: [
-          this.newNode
-        ],
-        links: [],
-      }
-      // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
-      this.$refs.seeksRelationGraph.appendJsonData(__graph_json_data, (seeksRGGraph) => {
-        // Called when the relation-graph is completed
+      console.log(JSON.stringify(form))
+      $ajax('KG/createQuestion','GET',{help: form.help, keyWords: form.keyWords, relatedIds: form.relatedIds, ver: form.ver}).then((res)=>{
+        if(res.code==1){
+          this.isQuestionMode=false
+          this.$message({
+            type: 'success',
+            message: '创建成功'
+          })
+        }
+        else{
+          this.$message({
+            type: 'error',
+            message: '创建失败'
+          })
+        }
       })
-
-      this.isolatedNodeList.push(this.newNode)
-
-      let commitForm = {
-        "comment": "",
-        "division": "Class",
-        "headId": "",
-        "id": this.newNode.id,
-        "name": this.newNode.text,
-        "op": 'createItem',
-        "relationId": "",
-        "tableId": this.tableId,
-        "tailId": "",
-        "title": "",
-        "user": this.user
-      }
-      this.commitOperationList.push(commitForm)
-
-    },
-
+    }
   },
 
   async created() {
