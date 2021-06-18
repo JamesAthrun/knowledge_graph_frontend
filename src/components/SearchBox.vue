@@ -232,7 +232,7 @@ export default {
     }
   },
   async created(){
-    this.currentVer=this.$cookies.get("table_currentVer")==null? this.$cookies.get("table_latestVer"):this.$cookies.get("table_currentVer")
+    this.currentVer=this.$cookies.get("table_latestVer")
     this.$cookies.set("table_currentVer", this.currentVer)
     for(let i=0;i<=this.$cookies.get("table_latestVer");i++){
       this.verList.push({ver:i, text:i})
