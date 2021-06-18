@@ -368,11 +368,11 @@ export default {
         // Called when the relation-graph is completed
       })
 
-      this.isolatedNodeList.push(this.newNode)
+      this.isolatedNodeList.push(form)
 
       let commitForm = {
-        "comment": "",
-        "division": "Class",
+        "comment": form.comment,
+        "division": form.division,
         "headId": "",
         "id": this.newNode.id,
         "name": this.newNode.text,
@@ -380,7 +380,7 @@ export default {
         "relationId": "",
         "tableId": this.tableId,
         "tailId": "",
-        "title": "",
+        "title": form.title,
         "user": this.user
       }
       this.commitOperationList.push(commitForm)
